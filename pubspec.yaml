@@ -1,0 +1,47 @@
+name: my_portfolio
+description: "A new Flutter project."
+
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.8.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # Fonts and UI
+  google_fonts: ^6.2.1
+  responsive_framework: ^1.5.1
+  cupertino_icons: ^1.0.8
+  font_awesome_flutter: ^10.6.0
+  chewie: ^1.5.0
+
+
+  # Scroll & Visibility
+  scrollable_positioned_list: ^0.3.8
+  visibility_detector: ^0.4.0
+
+  # Animations
+  animated_text_kit: ^4.2.2
+
+  # External links & EmailJS
+  url_launcher: ^6.2.5
+  http: ^1.1.0
+  video_player: ^2.7.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/images/
+
