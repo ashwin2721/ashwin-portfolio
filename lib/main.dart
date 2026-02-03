@@ -77,16 +77,22 @@ class _PortfolioHomeState extends State<PortfolioHome> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _videoController.value.isInitialized
-          ? Stack(
+      backgroundColor: Colors.black,
+      body: Stack(
         children: [
           SizedBox.expand(
             child: FittedBox(
               fit: BoxFit.cover,
               child: SizedBox(
-                width: _videoController.value.size.width,
-                height: _videoController.value.size.height,
-                child: VideoPlayer(_videoController),
+                width: _videoController.value.isInitialized
+                    ? _videoController.value.size.width
+                    : MediaQuery.of(context).size.width,
+                height: _videoController.value.isInitialized
+                    ? _videoController.value.size.height
+                    : MediaQuery.of(context).size.height,
+                child: _videoController.value.isInitialized
+                    ? VideoPlayer(_videoController)
+                    : Container(color: Colors.black),
               ),
             ),
           ),
@@ -125,8 +131,7 @@ class _PortfolioHomeState extends State<PortfolioHome> {
             ],
           ),
         ],
-      )
-          : const Center(child: CircularProgressIndicator()),
+      ),
     );
   }
 }

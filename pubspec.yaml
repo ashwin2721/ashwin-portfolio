@@ -31,6 +31,8 @@ dependencies:
   url_launcher: ^6.2.5
   http: ^1.1.0
   video_player: ^2.7.0
+  flutter_animate: ^4.5.2
+  particles_flutter: ^2.0.2
 
 dev_dependencies:
   flutter_test:

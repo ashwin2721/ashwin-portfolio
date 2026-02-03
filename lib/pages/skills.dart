@@ -36,12 +36,12 @@ class _SkillsSectionState extends State<SkillsSection>
 
     _textController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1200),
+      duration: const Duration(milliseconds: 800),
     );
 
     _skillsOffsetController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1200),
+      duration: const Duration(milliseconds: 800),
     );
 
     _textSlide = Tween<Offset>(
@@ -106,7 +106,7 @@ class _SkillsSectionState extends State<SkillsSection>
         if (!_hasAnimated && info.visibleFraction > 0.3) {
           _textController.forward();
           _skillsOffsetController.forward();
-          Future.delayed(const Duration(milliseconds: 1000), () {
+          Future.delayed(const Duration(milliseconds: 200), () {
             _floatController.repeat();
           });
           setState(() {

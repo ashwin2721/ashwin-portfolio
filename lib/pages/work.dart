@@ -4,8 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 import 'package:flutter/services.dart'; // for Clipboard
-import 'package:video_player/video_player.dart';
-import 'package:chewie/chewie.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class WorkSection extends StatefulWidget {
   const WorkSection({super.key});
@@ -18,6 +17,27 @@ class _WorkSectionState extends State<WorkSection> {
   bool _isVisible = false;
 
   final List<Map<String, dynamic>> _projects = [
+    {
+      "title": "Full Stack E-Commerce Website",
+      "image": "assets/images/w3.png",
+      "description":
+      "A complete MERN stack e-commerce platform with admin and user roles.\n\n• MongoDB, Express.js, React.js, Node.js\n• User authentication and role-based access\n• Persistent shopping cart and dynamic product management\n• Responsive design with optimized frontend and secure backend APIs",
+      "link": "https://ecommerce-mern-iicx.vercel.app/"
+    },
+    {
+      "title": "Flutter Portfolio Website",
+      "image": "assets/images/w4.png",
+      "description":
+      "A modern, responsive personal portfolio website built entirely with Flutter Web.\n\n• Designed interactive sections like About, Skills, and Contact\n• Integrated smooth scroll navigation and custom animations\n• Used Responsive Framework for adaptive layout across devices\n• Showcased Flutter UI principles and clean, reusable widget structure",
+      "link": "https://ashwinn.netlify.app/"
+    },
+    {
+      "title": "Tool Rental & Inventory Management System",
+       "image": "assets/images/tool_management.png",
+      "description":
+      "Designed and developed a scalable Flutter tool management system with real-time inventory control, tool status management, and Firebase integration.",
+      "link": ""
+    },
     {
       "title": "User Management System API",
       "image": "assets/images/w1.png",
@@ -32,21 +52,7 @@ class _WorkSectionState extends State<WorkSection> {
       "A YouTube-inspired web app built using HTML, CSS, and JavaScript.\n\n• Dynamic video grid layout\n• Responsive UI for all screen sizes\n• Interactive search bar and sidebar\n• Smooth hover animations and dark theme design",
       "link": ""
     },
-    {
-      "title": "Full Stack E-Commerce Website",
-      "image": "assets/images/w3.png",
-      "description":
-      "A complete MERN stack e-commerce platform with admin and user roles.\n\n• MongoDB, Express.js, React.js, Node.js\n• User authentication and role-based access\n• Persistent shopping cart and dynamic product management\n• Responsive design with optimized frontend and secure backend APIs",
-      "video": "assets/images/ecom.mp4",
-      "link": ""
-    },
-    {
-      "title": "Flutter Portfolio Website",
-      "image": "assets/images/w4.png",
-      "description":
-      "A modern, responsive personal portfolio website built entirely with Flutter Web.\n\n• Designed interactive sections like About, Skills, and Contact\n• Integrated smooth scroll navigation and custom animations\n• Used Responsive Framework for adaptive layout across devices\n• Showcased Flutter UI principles and clean, reusable widget structure",
-      "link": ""
-    },
+    
   ];
 
   @override
@@ -133,7 +139,7 @@ class _AnimatedProjectCardState extends State<_AnimatedProjectCard>
   }
 
   void _startDelayedAnimation() async {
-    await Future.delayed(Duration(milliseconds: 260 * widget.index));
+    await Future.delayed(Duration(milliseconds: 150 * widget.index)); // Faster stagger
     if (mounted) {
       setState(() {
         opacity = 1;
@@ -153,11 +159,11 @@ class _AnimatedProjectCardState extends State<_AnimatedProjectCard>
   @override
   Widget build(BuildContext context) {
     return AnimatedOpacity(
-      duration: const Duration(milliseconds: 900),
+      duration: const Duration(milliseconds: 600), // Faster fade
       opacity: opacity,
       curve: Curves.easeOut,
       child: AnimatedContainer(
-        duration: const Duration(milliseconds: 2000),
+        duration: const Duration(milliseconds: 800), // Faster slide
         transform: Matrix4.translationValues(offsetX, 0, 0),
         curve: Curves.easeOut,
         child: _ProjectCard(
@@ -223,114 +229,32 @@ class _ProjectCard extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              if (project["title"] == "Full Stack E-Commerce Website")
-                ElevatedButton.icon(
-                  onPressed: () {
-                    showDialog(
-                      context: context,
-                      builder: (_) =>
-                          _VideoPopup(videoAsset: project["video"]),
-                    );
-                  },
-                  icon: const Icon(Icons.play_circle_outline, size: 20),
-                  label: const Text("Video Demo"),
-                  style: ElevatedButton.styleFrom(
-                    foregroundColor: Colors.white,
-                    backgroundColor: const Color(0xFF26E0A6),
-                    textStyle: TextStyle(fontSize: isMobile ? 12 : 13),
-                    padding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                  ),
-                ),
-              IconButton(
+              ElevatedButton.icon(
                 onPressed: () async {
                   final link = project["link"];
                   if (link != null && link.isNotEmpty) {
-                    await Clipboard.setData(ClipboardData(text: link));
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text("Link copied to clipboard!"),
-                        duration: Duration(seconds: 2),
-                        backgroundColor: Color(0xFF26E0A6),
-                      ),
-                    );
+                    final Uri url = Uri.parse(link);
+                    if (await canLaunchUrl(url)) {
+                      await launchUrl(url, mode: LaunchMode.externalApplication);
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text("Could not launch link")),
+                      );
+                    }
                   }
                 },
-                icon: const Icon(Icons.copy, color: Color(0xFF26E0A6)),
-                tooltip: "Copy Link",
+                icon: const Icon(Icons.link, size: 20),
+                label: const Text("Visit"),
+                style: ElevatedButton.styleFrom(
+                  foregroundColor: Colors.white,
+                  backgroundColor: const Color(0xFF26E0A6),
+                  textStyle: TextStyle(fontSize: isMobile ? 12 : 13),
+                  padding:
+                  const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                ),
               ),
             ],
           )
-        ],
-      ),
-    );
-  }
-}
-
-// ---------------- Video Popup Widget -----------------
-class _VideoPopup extends StatefulWidget {
-  final String videoAsset;
-
-  const _VideoPopup({required this.videoAsset});
-
-  @override
-  State<_VideoPopup> createState() => _VideoPopupState();
-}
-
-class _VideoPopupState extends State<_VideoPopup> {
-  late VideoPlayerController _videoController;
-  ChewieController? _chewieController;
-
-  @override
-  void initState() {
-    super.initState();
-    _videoController = VideoPlayerController.asset(widget.videoAsset)
-      ..initialize().then((_) {
-        _chewieController = ChewieController(
-          videoPlayerController: _videoController,
-          autoPlay: true,
-          looping: false,
-          showControls: true,
-        );
-        setState(() {});
-      });
-  }
-
-  @override
-  void dispose() {
-    _chewieController?.dispose();
-    _videoController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Dialog(
-      backgroundColor: Colors.black87,
-      insetPadding: const EdgeInsets.all(20),
-      child: Stack(
-        children: [
-          if (_chewieController != null &&
-              _chewieController!.videoPlayerController.value.isInitialized)
-            Container(
-              width: double.infinity,
-              height: 300,
-              child: Chewie(controller: _chewieController!),
-            )
-          else
-            const SizedBox(
-              width: double.infinity,
-              height: 300,
-              child: Center(child: CircularProgressIndicator()),
-            ),
-          Positioned(
-            top: 8,
-            right: 8,
-            child: IconButton(
-              icon: const Icon(Icons.close, color: Colors.white),
-              onPressed: () => Navigator.of(context).pop(),
-            ),
-          ),
         ],
       ),
     );

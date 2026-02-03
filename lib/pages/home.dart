@@ -24,7 +24,7 @@ class _HomeSectionState extends State<HomeSection>
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(seconds: 5),
+      duration: const Duration(milliseconds: 1000), // Faster duration
     );
 
     _slideAnimation = Tween<Offset>(
@@ -112,7 +112,7 @@ class _HomeSectionState extends State<HomeSection>
                         letterSpacing: 2.7,
                         fontWeight: FontWeight.bold,
                       ),
-                      speed: const Duration(milliseconds: 120),
+                      speed: const Duration(milliseconds: 60), // Faster typing
                     ),
                   ],
                   totalRepeatCount: 1,
