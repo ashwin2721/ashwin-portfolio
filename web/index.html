@@ -6,26 +6,40 @@
   <meta http-equiv="X-UA-Compatible" content="IE=Edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Ashwin K | Portfolio</title>
-  <meta name="description" content="Hi, I'm Ashwin K — a Flutter and MERN Stack Developer passionate about creating responsive web and mobile applications.">
+  <title>Ashwin K | Digital Architect & Developer</title>
+  <meta name="description" content="Engineering the future of web and mobile. Full-stack developer specializing in Flutter and the MERN ecosystem.">
   <meta name="author" content="Ashwin K">
-  <meta name="keywords" content="Ashwin K, Portfolio, Flutter Developer, MERN Stack Developer, Web Developer, App Developer">
+  <meta name="keywords" content="Ashwin K, Portfolio, Flutter Developer, MERN Stack Developer, Web Developer, Full Stack Engineer, Digital Architect">
 
-  <meta name="theme-color" content="#000000">
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://ashwink.dev/">
+  <meta property="og:title" content="Ashwin K | Digital Architect & Developer">
+  <meta property="og:description" content="Engineering the future of web and mobile. Full-stack developer specializing in Flutter and the MERN ecosystem.">
+  <meta property="og:image" content="assets/images/cyborg_avatar.png">
+
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:url" content="https://ashwink.dev/">
+  <meta property="twitter:title" content="Ashwin K | Digital Architect & Developer">
+  <meta property="twitter:description" content="Engineering the future of web and mobile. Full-stack developer specializing in Flutter and the MERN ecosystem.">
+  <meta property="twitter:image" content="assets/images/cyborg_avatar.png">
+
+  <meta name="theme-color" content="#0E0E0F">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Ashwin Portfolio">
 
   <link rel="manifest" href="manifest.json">
   <link rel="icon" type="image/png" href="favicon.png"/>
 
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@700&display=swap" rel="stylesheet">
   <style>
     body {
-      background-color: #000000;
-      color: #26E0A6;
-      font-family: 'Orbitron', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #0E0E0F;
+      color: #73FFE3;
+      font-family: 'Space Mono', monospace;
       margin: 0;
       display: flex;
       flex-direction: column;
@@ -34,35 +48,78 @@
       height: 100vh;
       overflow: hidden;
     }
-    .spinner {
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
-      border: 5px solid rgba(38, 224, 166, 0.2);
-      border-top-color: #26E0A6;
-      animation: spin 1s linear infinite;
-      box-shadow: 0 0 20px rgba(38, 224, 166, 0.4);
+    .glitch-box {
+      width: 60px;
+      height: 60px;
+      border: 2px solid #73FFE3;
+      box-shadow: 0 0 15px rgba(115, 255, 227, 0.4);
       margin-bottom: 30px;
+      animation: flip 2s infinite cubic-bezier(0.165, 0.84, 0.44, 1);
     }
-    @keyframes spin {
-      to { transform: rotate(360deg); }
+    @keyframes flip {
+      0% { transform: perspective(120px) rotateX(0deg) rotateY(0deg); }
+      50% { transform: perspective(120px) rotateX(-180.1deg) rotateY(0deg); background-color: rgba(115, 255, 227, 0.2); }
+      100% { transform: perspective(120px) rotateX(-180deg) rotateY(-179.9deg); }
     }
     .loading-text {
-      font-size: 18px;
+      font-size: 14px;
       letter-spacing: 6px;
-      font-weight: 600;
+      font-weight: 700;
       animation: pulse 1.5s ease-in-out infinite;
     }
     @keyframes pulse {
-      0%, 100% { opacity: 0.5; }
+      0%, 100% { opacity: 0.4; }
       50% { opacity: 1; }
+    }
+    #loading-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: #0E0E0F;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 1.2s ease-in-out;
     }
   </style>
 </head>
 
 <body>
-<div class="spinner"></div>
-<div class="loading-text">LOADING...</div>
+<div id="loading-overlay">
+  <div class="glitch-box"></div>
+  <div class="loading-text">[ SYSTEM_INITIALIZING ]</div>
+</div>
+
+<script>
+  window.addEventListener('load', function() {
+    const observer = new MutationObserver(function(mutations) {
+      mutations.forEach(function(mutation) {
+        if (mutation.addedNodes.length > 0) {
+          for (let i = 0; i < mutation.addedNodes.length; i++) {
+            let node = mutation.addedNodes[i];
+            if (node.tagName && node.tagName.toLowerCase() === 'flutter-view') {
+              // Wait 200ms to allow flutter to paint its first frame
+              setTimeout(function(){
+                const overlay = document.getElementById('loading-overlay');
+                if(overlay) {
+                  overlay.style.opacity = '0';
+                  setTimeout(() => overlay.remove(), 1200);
+                }
+              }, 200);
+              observer.disconnect();
+            }
+          }
+        }
+      });
+    });
+    observer.observe(document.body, { childList: true });
+  });
+</script>
+
 <script src="flutter_bootstrap.js" async></script>
 </body>
 </html>

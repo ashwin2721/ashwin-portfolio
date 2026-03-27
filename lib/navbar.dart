@@ -1,8 +1,8 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:responsive_framework/responsive_framework.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
+import 'widgets/cyber_snake.dart';
 
 class NavBar extends StatefulWidget {
   final Function(int) onNavItemSelected;
@@ -18,16 +18,20 @@ class _NavBarState extends State<NavBar> with SingleTickerProviderStateMixin {
   late Animation<double> _fadeAnimation;
   bool _showMenu = false;
 
+  static const Color surfaceLow = Color(0xCC131314); // Slightly transparent
+  static const Color primary = Color(0xFF73FFE3);
+  static const Color ghostBorder = Color(0x1AFFFFFF); 
+
   @override
   void initState() {
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1000),
+      duration: const Duration(milliseconds: 1200),
     );
     _fadeAnimation = CurvedAnimation(
       parent: _controller,
-      curve: Curves.easeIn,
+      curve: Curves.easeOutExpo,
     );
     _controller.forward();
   }
@@ -47,74 +51,101 @@ class _NavBarState extends State<NavBar> with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-    final isCompact = screenWidth < 800;
+    final isCompact = screenWidth < 900;
 
     return FadeTransition(
       opacity: _fadeAnimation,
-      child: ClipRRect(
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 12.0, sigmaY: 12.0),
-          child: Container(
-            width: double.infinity,
-            margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-            decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.05),
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(color: Colors.white.withOpacity(0.08)),
-            ),
-            child: isCompact
-                ? Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    _animatedTitleText(true),
-                    IconButton(
-                      icon: Icon(
-                        _showMenu ? Icons.close : Icons.menu,
-                        color: const Color(0xFF26E0A6),
+      child: Center(
+        child: Container(
+          width: isCompact ? double.infinity : 1100, // Floating Max width for desktop
+          margin: EdgeInsets.symmetric(
+            horizontal: isCompact ? 16 : 24, 
+            vertical: 24
+          ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(24),
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 20.0, sigmaY: 20.0),
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: isCompact ? 24 : 20, vertical: 16),
+                decoration: BoxDecoration(
+                  color: surfaceLow,
+                  borderRadius: BorderRadius.circular(24),
+                  border: Border.all(color: ghostBorder),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.3),
+                      blurRadius: 30,
+                      offset: const Offset(0, 10),
+                    )
+                  ]
+                ),
+                child: isCompact
+                    ? Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              _animatedTitleText(isMobile: true),
+                              IconButton(
+                                icon: Icon(
+                                  _showMenu ? Icons.close : Icons.segment,
+                                  color: primary,
+                                ),
+                                onPressed: toggleMenu,
+                              ),
+                            ],
+                          ),
+                          AnimatedContainer(
+                            duration: const Duration(milliseconds: 400),
+                            curve: Curves.fastOutSlowIn,
+                            height: _showMenu ? 310 : 0,
+                            child: Padding(
+                              padding: const EdgeInsets.only(top: 16.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  navItem("00. THE_CORE", 0),
+                                  navItem("01. ABOUT_ME", 1),
+                                  navItem("02. SKILLSET", 2),
+                                  navItem("03. ARCHIVES", 3),
+                                  navItem("04. TERMINAL", 4),
+                                  const SizedBox(height: 12),
+                                  _buildArcadeButton(context),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      )
+                    : Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          _animatedTitleText(isMobile: false),
+                          const SizedBox(width: 8),
+                          Flexible(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                navItem("00. CORE", 0),
+                                const SizedBox(width: 2),
+                                navItem("01. ABOUT", 1),
+                                const SizedBox(width: 2),
+                                navItem("02. SKILLS", 2),
+                                const SizedBox(width: 2),
+                                navItem("03. WORK", 3),
+                                const SizedBox(width: 2),
+                                navItem("04. CONTACT", 4),
+                                const SizedBox(width: 6),
+                                // Arcade Game Button
+                                _buildArcadeButton(context),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
-                      onPressed: toggleMenu,
-                    ),
-                  ],
-                ),
-                AnimatedContainer(
-                  duration: const Duration(milliseconds: 300),
-                  curve: Curves.easeInOut,
-                  height: _showMenu ? 260 : 0,
-                  child: SingleChildScrollView(
-                    physics: const ClampingScrollPhysics(),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        navItem("Home", 0),
-                        navItem("About", 1),
-                        navItem("Skills", 2),
-                        navItem("Works", 3),
-                        navItem("Contact", 4),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            )
-                : Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                _animatedTitleText(false),
-                Wrap(
-                  spacing: 24,
-                  children: [
-                    navItem("Home", 0),
-                    navItem("About", 1),
-                    navItem("Skills", 2),
-                    navItem("Works", 3),
-                    navItem("Contact", 4),
-                  ],
-                ),
-              ],
+              ),
             ),
           ),
         ),
@@ -122,68 +153,129 @@ class _NavBarState extends State<NavBar> with SingleTickerProviderStateMixin {
     );
   }
 
-  // Title animation
-  Widget _animatedTitleText(bool isMobile) {
-    return SizedBox(
-      height: 30,
-      child: AnimatedTextKit(
-        repeatForever: true,
-        isRepeatingAnimation: true,
-        pause: const Duration(seconds: 1),
-        animatedTexts: [
-          TyperAnimatedText(
-            "Hey It's me Ashwin",
-            textStyle: GoogleFonts.orbitron(
-              fontSize: isMobile ? 20 : 22,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-              letterSpacing: 1.2,
-            ),
-            speed: const Duration(milliseconds: 80),
-          ),
-          ColorizeAnimatedText(
-            "Hey It's me Ashwin",
-            textStyle: GoogleFonts.orbitron(
-              fontSize: isMobile ? 20 : 22,
-              fontWeight: FontWeight.bold,
-            ),
-            colors: const [
-              Color(0xFF26E0A6),
-              Colors.white,
-              Color(0xFF00FFFF),
-              Colors.blue,
-              Colors.cyan,
+  // Arcade Game Trigger Button
+  Widget _buildArcadeButton(BuildContext context) {
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      child: GestureDetector(
+        onTap: () => showCyberSnakeGame(context),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+          decoration: BoxDecoration(
+            color: const Color(0xFF73FFE3).withValues(alpha: 0.08),
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(color: const Color(0xFF73FFE3).withValues(alpha: 0.35)),
+            boxShadow: [
+              BoxShadow(
+                color: const Color(0xFF73FFE3).withValues(alpha: 0.15),
+                blurRadius: 12,
+                spreadRadius: -2,
+              )
             ],
-            speed: Duration(milliseconds: 250),
           ),
-        ],
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(Icons.gamepad_outlined, color: Color(0xFF73FFE3), size: 14),
+              const SizedBox(width: 6),
+              Text(
+                'ARCADE',
+                style: GoogleFonts.spaceMono(
+                  color: const Color(0xFF73FFE3),
+                  fontSize: 10,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 1.5,
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
 
-  // Reusable nav item
+  // Neon Arch Logo
+  Widget _animatedTitleText({required bool isMobile}) {
+    return SizedBox(
+      height: 24,
+      child: DefaultTextStyle(
+        style: GoogleFonts.spaceMono(
+          fontSize: isMobile ? 12 : 14,
+          fontWeight: FontWeight.bold,
+          color: Colors.white,
+          letterSpacing: 1.5,
+        ),
+        child: AnimatedTextKit(
+          repeatForever: true,
+          isRepeatingAnimation: true,
+          pause: const Duration(seconds: 4),
+          animatedTexts: [
+            TyperAnimatedText(
+              "// ashwin.architect",
+              speed: const Duration(milliseconds: 100),
+            ),
+            TyperAnimatedText(
+              "// ashwin.dev",
+              speed: const Duration(milliseconds: 100),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // Clean Neon Item Hover
   Widget navItem(String title, int index) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8),
-      child: MouseRegion(
-        cursor: SystemMouseCursors.click,
-        child: TextButton(
-          onPressed: () {
-            widget.onNavItemSelected(index);
-            setState(() {
-              _showMenu = false;
-            });
-          },
-          style: TextButton.styleFrom(
-            foregroundColor: const Color(0xFF26E0A6),
+    return _HoverNavItem(
+      title: title, 
+      onTap: () {
+        widget.onNavItemSelected(index);
+        setState(() {
+          _showMenu = false;
+        });
+      }
+    );
+  }
+}
+
+class _HoverNavItem extends StatefulWidget {
+  final String title;
+  final VoidCallback onTap;
+
+  const _HoverNavItem({required this.title, required this.onTap});
+
+  @override
+  State<_HoverNavItem> createState() => _HoverNavItemState();
+}
+
+class _HoverNavItemState extends State<_HoverNavItem> {
+  bool isHovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      onEnter: (_) => setState(() => isHovered = true),
+      onExit: (_) => setState(() => isHovered = false),
+      child: GestureDetector(
+        onTap: widget.onTap,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          decoration: BoxDecoration(
+            color: isHovered ? const Color(0xFF73FFE3).withValues(alpha: 0.1) : Colors.transparent,
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(
+              color: isHovered ? const Color(0xFF73FFE3).withValues(alpha: 0.3) : Colors.transparent,
+            )
           ),
           child: Text(
-            title,
-            style: GoogleFonts.orbitron(
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
-              letterSpacing: 0.8,
-              color: const Color(0xFF26E0A6),
+            widget.title,
+            style: GoogleFonts.spaceMono(
+              fontSize: 10,
+              fontWeight: FontWeight.bold,
+              letterSpacing: 1.1,
+              color: isHovered ? const Color(0xFF73FFE3) : const Color(0xFFA0A0A0),
             ),
           ),
         ),

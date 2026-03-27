@@ -1,5 +1,5 @@
 name: my_portfolio
-description: "A new Flutter project."
+description: "Ashwin K — Flutter & MERN Stack Developer Portfolio"
 
 publish_to: 'none'
 
@@ -17,7 +17,6 @@ dependencies:
   responsive_framework: ^1.5.1
   cupertino_icons: ^1.0.8
   font_awesome_flutter: ^10.6.0
-  chewie: ^1.5.0
 
 
   # Scroll & Visibility
@@ -30,9 +29,6 @@ dependencies:
   # External links & EmailJS
   url_launcher: ^6.2.5
   http: ^1.1.0
-  video_player: ^2.7.0
-  flutter_animate: ^4.5.2
-  particles_flutter: ^2.0.2
 
 dev_dependencies:
   flutter_test:

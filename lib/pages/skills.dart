@@ -1,7 +1,6 @@
-import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:visibility_detector/visibility_detector.dart';
+import 'dart:math' as math;
 
 class SkillsSection extends StatefulWidget {
   const SkillsSection({super.key});
@@ -10,249 +9,655 @@ class SkillsSection extends StatefulWidget {
   State<SkillsSection> createState() => _SkillsSectionState();
 }
 
-class _SkillsSectionState extends State<SkillsSection>
-    with TickerProviderStateMixin {
+class _SkillsSectionState extends State<SkillsSection> with SingleTickerProviderStateMixin {
   late AnimationController _floatController;
-  late AnimationController _textController;
-  late AnimationController _skillsOffsetController;
-
-  late Animation<Offset> _textSlide;
-  late Animation<Offset> _skillsSlide;
-  late Animation<double> _textFade;
-  late Animation<double> _skillsFade;
-
-  final List<_FloatingSkill> _skills = [];
-  final List<String> skillTexts = [
-    "Flutter", "Dart", "Firebase", "Riverpod", "MongoDB", "Express.js",
-    "React", "Node.js", "JavaScript", "CouchDB", "Git", "GitHub",
-    "REST API", "SQL", "HTML", "CSS", "FIREBASE", "JavaScript",
-  ];
-
-  bool _hasAnimated = false;
 
   @override
   void initState() {
     super.initState();
-
-    _textController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 800),
-    );
-
-    _skillsOffsetController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 800),
-    );
-
-    _textSlide = Tween<Offset>(
-      begin: const Offset(-0.5, 0),
-      end: Offset.zero,
-    ).animate(CurvedAnimation(
-      parent: _textController,
-      curve: Curves.easeOut,
-    ));
-
-    _skillsSlide = Tween<Offset>(
-      begin: const Offset(0.5, 0),
-      end: Offset.zero,
-    ).animate(CurvedAnimation(
-      parent: _skillsOffsetController,
-      curve: Curves.easeOut,
-    ));
-
-    _textFade = CurvedAnimation(
-      parent: _textController,
-      curve: Curves.easeIn,
-    );
-
-    _skillsFade = CurvedAnimation(
-      parent: _skillsOffsetController,
-      curve: Curves.easeIn,
-    );
-
     _floatController = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 30),
-    );
-
-    final rand = Random();
-    for (final skill in skillTexts) {
-      _skills.add(_FloatingSkill(
-        text: skill,
-        dx: rand.nextDouble() * 200 - 100,
-        dy: rand.nextDouble() * 200 - 100,
-        angle: rand.nextDouble() * 2 * pi,
-        radius: 60 + rand.nextDouble() * 100,
-        speed: 0.4 + rand.nextDouble() * 0.8,
-      ));
-    }
+        vsync: this,
+        duration: const Duration(seconds: 4))
+      ..repeat(reverse: true);
   }
 
   @override
   void dispose() {
-    _textController.dispose();
-    _skillsOffsetController.dispose();
     _floatController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final bool isMobile = MediaQuery.of(context).size.width < 700;
+    final bool isMobile = MediaQuery.of(context).size.width < 900;
+    final double paddingH = isMobile ? 20 : 60;
 
-    return VisibilityDetector(
-      key: const Key('skills-section'),
-      onVisibilityChanged: (info) {
-        if (!_hasAnimated && info.visibleFraction > 0.3) {
-          _textController.forward();
-          _skillsOffsetController.forward();
-          Future.delayed(const Duration(milliseconds: 200), () {
-            _floatController.repeat();
-          });
-          setState(() {
-            _hasAnimated = true;
-          });
-        }
-      },
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 50),
-        child: isMobile
-            ? Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            _buildTextSection(),
-            const SizedBox(height: 40),
-            _buildFloatingSkills(280, 14),
-          ],
-        )
-            : Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Expanded(child: _buildTextSection()),
-            const SizedBox(width: 40),
-            Expanded(child: _buildFloatingSkills(400, 18)),
-          ],
+    return Container(
+      width: double.infinity,
+      color: Colors.transparent, // Let ambient glow show through
+      padding: EdgeInsets.symmetric(horizontal: paddingH, vertical: 80),
+      child: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 1400),
+          child: isMobile
+              ? Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildLeftColumn(context, isMobile: true),
+                    const SizedBox(height: 60),
+                    _buildRightColumn(context, isMobile: true),
+                  ],
+                )
+              : Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(flex: 5, child: _buildLeftColumn(context, isMobile: false)),
+                    const SizedBox(width: 40),
+                    Expanded(flex: 5, child: _buildRightColumn(context, isMobile: false)),
+                  ],
+                ),
         ),
       ),
     );
   }
 
-  Widget _buildTextSection() {
-    return FadeTransition(
-      opacity: _textFade,
-      child: SlideTransition(
-        position: _textSlide,
-        child: Container(
-          alignment: Alignment.center,
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 550),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Skills & Education",
-                  style: GoogleFonts.orbitron(
-                    color: const Color(0xFF26E0A6),
-                    fontSize: 30,
-                    letterSpacing: 1.5,
-                    fontWeight: FontWeight.w600,
-                  ),
+  // ---------------------------------------------------------------------------
+  // LEFT COLUMN
+  // ---------------------------------------------------------------------------
+  Widget _buildLeftColumn(BuildContext context, {required bool isMobile}) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Title
+        RichText(
+          text: TextSpan(
+            style: GoogleFonts.poppins(
+              fontSize: isMobile ? 48 : 64,
+              fontWeight: FontWeight.w900,
+              height: 1.1,
+              color: Colors.white,
+              letterSpacing: -2,
+            ),
+            children: const [
+              TextSpan(text: "Expertise "),
+              TextSpan(
+                text: "&",
+                style: TextStyle(color: Color(0xFF26E0A6)),
+              ),
+              TextSpan(text: "\nLogic."),
+            ],
+          ),
+        ),
+        const SizedBox(height: 24),
+
+        // Paragraph
+        Text(
+          "Architecting digital ecosystems with surgical precision. My toolkit spans the entire stack, focused on performance and aesthetic excellence.",
+          style: GoogleFonts.inter(
+            fontSize: isMobile ? 15 : 16,
+            color: const Color(0xFFA0A0A0),
+            height: 1.6,
+          ),
+        ),
+        const SizedBox(height: 48),
+
+        // Row 1: Two Cards
+        Flex(
+          direction: isMobile ? Axis.vertical : Axis.horizontal,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              flex: isMobile ? 0 : 1,
+              child: _buildSkillCard(
+                category: "CATEGORY 01",
+                title: "Frontend",
+                icon: Icons.desktop_mac_outlined,
+                chips: ["React", "Next.js", "Tailwind CSS", "Three.js"],
+                isActive: true,
+              ),
+            ),
+            SizedBox(width: 16, height: isMobile ? 16 : 0),
+            Expanded(
+              flex: isMobile ? 0 : 1,
+              child: _buildSkillCard(
+                category: "CATEGORY 02",
+                title: "Programming",
+                icon: Icons.code_rounded,
+                chips: ["TypeScript", "Python", "Node.js", "Go"],
+                isActive: true,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 16),
+
+        // Row 2: Wide Card (Frameworks & Design Tools)
+        Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(24),
+          decoration: _cardDecoration(),
+          child: Flex(
+            direction: isMobile ? Axis.vertical : Axis.horizontal,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                flex: isMobile ? 0 : 1,
+                child: _buildInnerSkillSection(
+                  title: "Frameworks",
+                  icon: Icons.layers_outlined,
+                  chips: ["Express", "FastAPI", "Django"],
+                  isActive: false,
                 ),
-                const SizedBox(height: 20),
-                Text(
-                  "With a strong foundation in full-stack development, I specialize in building dynamic, responsive apps using Flutter and the MERN stack. I’ve worked extensively with Firebase, Git, REST APIs, CouchDB, and other modern development tools to create seamless user experiences.",
-                  style: GoogleFonts.poppins(
-                    fontSize: 18,
-                    color: Colors.white70,
-                    height: 1.6,
-                  ),
+              ),
+              SizedBox(width: 24, height: isMobile ? 32 : 0),
+              Expanded(
+                flex: isMobile ? 0 : 1,
+                child: _buildInnerSkillSection(
+                  title: "Design Tools",
+                  icon: Icons.palette_outlined,
+                  chips: ["Figma", "Spline", "After Effects"],
+                  isActive: false,
                 ),
-                AnimatedOpacity(
-                  opacity: _hasAnimated ? 1.0 : 0.0,
-                  duration: const Duration(milliseconds: 1000),
-                  curve: Curves.easeInOut,
-                  child: Container(
-                    margin: const EdgeInsets.only(top: 20),
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFF2EE9A0).withOpacity(0.15),
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(
-                          color: const Color(0xFF26E0A6), width: 1.2),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 60),
+
+        // Academic Core Divider
+        _buildDividerLabel("ACADEMIC CORE"),
+        const SizedBox(height: 30),
+
+        _buildTimelineCard(
+          isMobile: isMobile,
+          date: "GRADUATED 2022",
+          title: "Bachelor of\nTechnology",
+          gradeLabel: "CGPA / Grade",
+          grade: "First Class with\nDistinction",
+          icon: Icons.account_balance,
+          institution: "St. Mary's Group of Institutions",
+          subInstitution: "Jawaharlal Nehru Technological University, Hyderabad",
+        ),
+        _buildTimelineCard(
+          isMobile: isMobile,
+          date: "GRADUATED 2018",
+          title: "Higher Secondary\nEducation (Plus 2)",
+          gradeLabel: "Grade",
+          grade: "Outstanding",
+          icon: Icons.school_outlined,
+          institution: "Mambaram Higher Secondary School",
+          subInstitution: "Kerala State Board",
+        ),
+      ],
+    );
+  }
+
+  // ---------------------------------------------------------------------------
+  // RIGHT COLUMN (Experience)
+  // ---------------------------------------------------------------------------
+  Widget _buildRightColumn(BuildContext context, {required bool isMobile}) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(height: isMobile ? 0 : 150), // Align with Academic Core slightly
+        _buildDividerLabel("EXPERIENCE CORE"),
+        const SizedBox(height: 30),
+
+        _buildTimelineCard(
+          isMobile: isMobile,
+          date: "PRESENT",
+          title: "Flutter Developer",
+          icon: Icons.work_outline,
+          institution: "Techtern Pvt. Ltd.",
+          subInstitution: "Building elegant cross-platform applications.",
+          isExperience: true,
+        ),
+        
+        _buildTimelineCard(
+          isMobile: isMobile,
+          date: "PAST",
+          title: "MERN Stack Intern",
+          icon: Icons.developer_mode,
+          institution: "Techtern Pvt. Ltd.",
+          subInstitution: "Developed and scaled web platforms.",
+          isExperience: true,
+        ),
+        const SizedBox(height: 80),
+        _buildGraphicContainer(isMobile),
+      ],
+    );
+  }
+
+  // ---------------------------------------------------------------------------
+  // HELPER COMPONENTS
+  // ---------------------------------------------------------------------------
+
+  Widget _buildDividerLabel(String text) {
+    return Row(
+      children: [
+        Expanded(child: Divider(color: Colors.white.withValues(alpha: 0.1))),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Text(
+            text,
+            style: GoogleFonts.orbitron(
+              fontSize: 12,
+              letterSpacing: 4,
+              fontWeight: FontWeight.w700,
+              color: const Color(0xFFA0A0A0),
+            ),
+          ),
+        ),
+        Expanded(child: Divider(color: Colors.white.withValues(alpha: 0.1))),
+      ],
+    );
+  }
+
+  BoxDecoration _cardDecoration() {
+    return BoxDecoration(
+      color: const Color(0xFF161618), // Distinct dark grey typical for these cards
+      borderRadius: BorderRadius.circular(16),
+      border: Border.all(color: const Color(0xFF2A2A2C)), 
+    );
+  }
+
+  Widget _buildSkillCard({
+    required String category,
+    required String title,
+    required IconData icon,
+    required List<String> chips,
+    required bool isActive,
+  }) {
+    return Container(
+      padding: const EdgeInsets.all(24),
+      decoration: _cardDecoration(),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Icon(icon, color: const Color(0xFF26E0A6), size: 24),
+              Text(
+                category,
+                style: GoogleFonts.orbitron(
+                  fontSize: 9,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 1.5,
+                  color: const Color(0xFF6E6E73),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 24),
+          Text(
+            title,
+            style: GoogleFonts.poppins(
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
+          ),
+          const SizedBox(height: 16),
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: chips.map((c) => _buildChip(c, isActive: isActive)).toList(),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildInnerSkillSection({
+    required String title,
+    required IconData icon,
+    required List<String> chips,
+    required bool isActive,
+  }) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Icon(icon, color: const Color(0xFF26E0A6), size: 20),
+            const SizedBox(width: 12),
+            Text(
+              title,
+              style: GoogleFonts.poppins(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 16),
+        Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          children: chips.map((c) => _buildChip(c, isActive: isActive)).toList(),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildChip(String text, {required bool isActive}) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      decoration: BoxDecoration(
+        color: isActive ? const Color(0xFF11302A) : const Color(0xFF212124),
+        borderRadius: BorderRadius.circular(20), // Chips are rounded
+        border: Border.all(color: isActive ? const Color(0xFF1B4D43) : const Color(0xFF333336)),
+      ),
+      child: Text(
+        text,
+        style: GoogleFonts.poppins(
+          color: isActive ? const Color(0xFF26E0A6) : const Color(0xFF909090),
+          fontSize: 11,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTimelineCard({
+    required bool isMobile,
+    required String date,
+    required String title,
+    String? gradeLabel,
+    String? grade,
+    required IconData icon,
+    required String institution,
+    String? subInstitution,
+    bool isExperience = false, 
+  }) {
+    final Color mainColor = isExperience ? const Color(0xFF73FFE3) : const Color(0xFF26E0A6);
+
+    return IntrinsicHeight(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          // Timeline line and dot
+          Column(
+            children: [
+              Container(
+                width: 12,
+                height: 12,
+                decoration: BoxDecoration(
+                  color: mainColor,
+                  shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                      color: mainColor.withValues(alpha: 0.5),
+                      blurRadius: 10,
+                      spreadRadius: 2,
+                    )
+                  ],
+                ),
+              ),
+              Expanded(
+                child: Container(
+                  width: 1,
+                  color: Colors.white.withValues(alpha: 0.1),
+                ),
+              )
+            ],
+          ),
+          const SizedBox(width: 20),
+          // The Card
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 24.0),
+              child: Container(
+                padding: const EdgeInsets.all(28),
+                decoration: _cardDecoration(),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                date,
+                                style: GoogleFonts.orbitron(
+                                  color: mainColor,
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.bold,
+                                  letterSpacing: 1.5,
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                title,
+                                style: GoogleFonts.poppins(
+                                  fontSize: isMobile ? 18 : 22,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                  height: 1.2,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        if (gradeLabel != null && grade != null)
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Text(
+                                gradeLabel,
+                                style: GoogleFonts.poppins(
+                                  color: const Color(0xFFA0A0A0),
+                                  fontSize: 11,
+                                ),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                grade,
+                                textAlign: TextAlign.right,
+                                style: GoogleFonts.poppins(
+                                  color: mainColor,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                  fontStyle: FontStyle.italic,
+                                ),
+                              ),
+                            ],
+                          ),
+                      ],
                     ),
-                    child: Text(
-                      "I hold a Bachelor of Technology degree in Computer Science from St. Thomas College of Engineering and Technology, Kannur.",
-                      style: GoogleFonts.poppins(
-                        fontSize: 17,
-                        color: Colors.white,
-                        height: 1.6,
+                    const SizedBox(height: 30),
+                    Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFF1C1C1E),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Icon(icon, color: mainColor, size: 24),
+                        ),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                institution,
+                                style: GoogleFonts.poppins(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              if (subInstitution != null) ...[
+                                const SizedBox(height: 2),
+                                Text(
+                                  subInstitution,
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 11,
+                                    color: const Color(0xFFA0A0A0),
+                                  ),
+                                ),
+                              ]
+                            ],
+                          ),
+                        )
+                      ],
+                    )
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildGraphicContainer(bool isMobile) {
+    final double boxSize = isMobile ? 320 : 400; // Adjusted size for column stacking
+
+    return Center(
+      child: Column(
+        children: [
+          AnimatedBuilder(
+            animation: _floatController,
+            builder: (context, child) {
+              return Transform.translate(
+                offset: Offset(0, math.sin(_floatController.value * math.pi) * 8),
+                child: child,
+              );
+            },
+            child: SizedBox(
+              width: boxSize,
+              height: boxSize,
+              child: Stack(
+              clipBehavior: Clip.none,
+              children: [
+                // Centered generated graphic
+                Positioned.fill(
+                  child: Center(
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints.loose(Size(boxSize * 0.9, boxSize * 0.9)),
+                      child: Image.asset(
+                        'assets/images/skills_orbit.png',
+                        fit: BoxFit.contain,
+                        errorBuilder: (context, error, stackTrace) => Container(
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(color: const Color(0xFF26E0A6), width: 1),
+                          ),
+                          child: const Center(
+                            child: Icon(Icons.blur_on, size: 80, color: Color(0xFF26E0A6)),
+                          ),
+                        ),
                       ),
                     ),
                   ),
+                ),
+
+                // Floating labels
+                AnimatedBuilder(
+                  animation: _floatController,
+                  builder: (context, child) {
+                    return Positioned(
+                      top: boxSize * 0.15 + (math.cos(_floatController.value * math.pi) * 6),
+                      left: isMobile ? 0 : -20,
+                      child: child ?? const SizedBox(),
+                    );
+                  },
+                  child: _buildMetricLabel("CPU_LOAD: 24%"),
+                ),
+                AnimatedBuilder(
+                  animation: _floatController,
+                  builder: (context, child) {
+                    return Positioned(
+                      right: isMobile ? 0 : -30,
+                      top: boxSize * 0.45 + (math.sin(_floatController.value * math.pi) * -6),
+                      child: child ?? const SizedBox(),
+                    );
+                  },
+                  child: _buildMetricLabel("NODE_STABLE: 1"),
+                ),
+                AnimatedBuilder(
+                  animation: _floatController,
+                  builder: (context, child) {
+                    return Positioned(
+                      bottom: boxSize * 0.25 + (math.cos(_floatController.value * math.pi) * -6),
+                      right: boxSize * 0.1,
+                      child: child ?? const SizedBox(),
+                    );
+                  },
+                  child: _buildMetricLabel("MEM_ALLOC: 4.2GB"),
                 ),
               ],
             ),
           ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildFloatingSkills(double height, double fontSize) {
-    return FadeTransition(
-      opacity: _skillsFade,
-      child: SlideTransition(
-        position: _skillsSlide,
-        child: SizedBox(
-          height: height,
-          child: AnimatedBuilder(
-            animation: _floatController,
-            builder: (context, child) {
-              return Stack(
-                alignment: Alignment.center,
-                children: _skills.map((skill) {
-                  final angle = skill.angle +
-                      _floatController.value * 2 * pi * skill.speed;
-                  final dx = cos(angle) * skill.radius;
-                  final dy = sin(angle) * skill.radius;
-
-                  return Transform.translate(
-                    offset: Offset(dx, dy),
-                    child: Text(
-                      skill.text,
-                      style: GoogleFonts.poppins(
-                        fontSize: fontSize,
-                        color: const Color(0xFF26E0A6),
-                        fontWeight: FontWeight.w500,
-                      ),
+          ), // Close AnimatedBuilder
+          const SizedBox(height: 40),
+          // System Status Tracker Bottom
+          Column(
+            children: [
+              Text(
+                "SYSTEM STATUS",
+                style: GoogleFonts.orbitron(
+                  fontSize: 10,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 3,
+                  color: const Color(0xFFA0A0A0),
+                ),
+              ),
+              const SizedBox(height: 12),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    width: 6,
+                    height: 6,
+                    decoration: const BoxDecoration(
+                      color: Color(0xFF26E0A6),
+                      shape: BoxShape.circle,
                     ),
-                  );
-                }).toList(),
-              );
-            },
-          ),
+                  ),
+                  const SizedBox(width: 8),
+                  Text(
+                    "ARCHITECT_CORE_ACTIVE",
+                    style: GoogleFonts.spaceMono(
+                      color: Colors.white,
+                      fontSize: 11,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              )
+            ],
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMetricLabel(String text) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      decoration: BoxDecoration(
+        color: Colors.black.withValues(alpha: 0.5), // Semi-transparent overlay
+        borderRadius: BorderRadius.circular(4),
+        border: Border.all(color: const Color(0xFF1E4038)), // Dark teal border
+      ),
+      child: Text(
+        text,
+        style: GoogleFonts.spaceMono(
+          color: const Color(0xFF26E0A6),
+          fontSize: 9,
         ),
       ),
     );
   }
-}
-
-class _FloatingSkill {
-  final String text;
-  final double dx;
-  final double dy;
-  final double angle;
-  final double radius;
-  final double speed;
-
-  _FloatingSkill({
-    required this.text,
-    required this.dx,
-    required this.dy,
-    required this.angle,
-    required this.radius,
-    required this.speed,
-  });
 }
