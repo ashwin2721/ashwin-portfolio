@@ -6,7 +6,7 @@ import 'cyber_snake.dart';
 
 class BoredGamePrompt extends StatefulWidget {
   final Duration delay;
-  const BoredGamePrompt({super.key, this.delay = const Duration(seconds: 5)});
+  const BoredGamePrompt({super.key, this.delay = const Duration(seconds: 10)});
 
   @override
   State<BoredGamePrompt> createState() => _BoredGamePromptState();

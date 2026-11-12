@@ -3,8 +3,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:url_launcher/url_launcher.dart';
+import 'package:video_player/video_player.dart';
 import 'dart:convert';
-import 'dart:ui';
 
 class ContactSection extends StatefulWidget {
   const ContactSection({super.key});
@@ -17,9 +17,7 @@ class _ContactSectionState extends State<ContactSection> {
   // ---------------------------------------------------------------------------
   // NEON ARCHITECT THEME CONSTANTS
   // ---------------------------------------------------------------------------
-  static const Color bg = Color(0xFF0E0E0F);
   static const Color surfaceLow = Color(0xFF131314);
-  static const Color surfaceHigh = Color(0xFF262627);
   static const Color inputBg = Color(0xFF0D0D0E);
   static const Color primary = Color(0xFF73FFE3);
   static const Color primaryGlow = Color(0x3373FFE3); // 20% Alpha
@@ -36,6 +34,25 @@ class _ContactSectionState extends State<ContactSection> {
 
   final _formKey = GlobalKey<FormState>();
   bool _isSending = false;
+  late VideoPlayerController _videoController;
+
+  @override
+  void initState() {
+    super.initState();
+    _videoController = VideoPlayerController.asset('assets/images/contactvid.mp4')
+      ..initialize().then((_) {
+        _videoController.setVolume(0.0);
+        _videoController.setLooping(true);
+        _videoController.play();
+        setState(() {});
+      });
+  }
+
+  @override
+  void dispose() {
+    _videoController.dispose();
+    super.dispose();
+  }
 
   Future<void> sendEmail() async {
     if (!_formKey.currentState!.validate()) return;
@@ -46,7 +63,6 @@ class _ContactSectionState extends State<ContactSection> {
       final response = await http.post(
         url,
         headers: {
-          'origin': 'https://ashwinn.netlify.app',
           'Content-Type': 'application/json',
         },
         body: json.encode({
@@ -69,10 +85,12 @@ class _ContactSectionState extends State<ContactSection> {
       } else {
         if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text("Transmission failed. Re-verify quantum link.")),
+          SnackBar(
+            content: Text("Transmission failed [${response.statusCode}]. Re-verify quantum link."),
+          ),
         );
       }
-    } catch (_) {
+    } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Network detached. Check physical connection.")),
@@ -199,7 +217,7 @@ class _ContactSectionState extends State<ContactSection> {
         // Glowing Core Image Container
         Container(
           width: isMobile ? double.infinity : 400,
-          height: isMobile ? 400 : 480,
+          height: isMobile ? null : 480, // Let AspectRatio handle height on mobile
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(24),
             boxShadow: const [
@@ -212,33 +230,56 @@ class _ContactSectionState extends State<ContactSection> {
           ),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(24),
-            child: Image.asset(
-              "assets/images/contactuss.png",
-              fit: BoxFit.cover,
-              alignment: Alignment.topCenter,
-              errorBuilder: (_, __, ___) => Container(
-                color: surfaceLow,
-                child: const Icon(Icons.person, size: 100, color: Colors.white12),
-              ),
-            ),
+            child: _videoController.value.isInitialized
+                ? AspectRatio(
+                    aspectRatio: _videoController.value.aspectRatio,
+                    child: VideoPlayer(_videoController),
+                  )
+                : Container(
+                    color: surfaceLow,
+                    child: const Center(
+                      child: CircularProgressIndicator(color: primary),
+                    ),
+                  ),
           ),
         ),
         const SizedBox(height: 48),
 
         // Contact Nodes
-        _buildContactNode(Icons.location_on_rounded, "LOCATION", "Kannur, Kerala"),
+        _buildContactNode(
+          Icons.location_on_rounded, 
+          "LOCATION", 
+          "Kannur, Kerala",
+          onTap: () => launchUrl(Uri.parse('https://www.google.com/maps/search/?api=1&query=Eachur+Kannur'), mode: LaunchMode.externalApplication),
+        ),
         const SizedBox(height: 32),
-        _buildContactNode(Icons.phone_rounded, "ENCRYPTED LINE", "+91 9747475105"),
+        _buildContactNode(
+          Icons.phone_rounded, 
+          "ENCRYPTED LINE", 
+          "+91 9747475105",
+          onTap: () => launchUrl(Uri.parse('tel:+919747475105'), mode: LaunchMode.externalApplication),
+        ),
         const SizedBox(height: 32),
-        _buildContactNode(Icons.alternate_email_rounded, "DIGITAL MAIL", "ashwinaneesh11@gmail.com"),
+        _buildContactNode(
+          Icons.alternate_email_rounded, 
+          "DIGITAL MAIL", 
+          "ashwinaneesh11@gmail.com",
+          onTap: () => launchUrl(Uri.parse('mailto:ashwinaneesh11@gmail.com'), mode: LaunchMode.externalApplication),
+        ),
       ],
     );
   }
 
-  Widget _buildContactNode(IconData icon, String label, String value) {
-    return Row(
-      children: [
-        Container(
+  Widget _buildContactNode(IconData icon, String label, String value, {VoidCallback? onTap}) {
+    return MouseRegion(
+      cursor: onTap != null ? SystemMouseCursors.click : SystemMouseCursors.basic,
+      child: GestureDetector(
+        onTap: onTap,
+        child: Container(
+          color: Colors.transparent, // Ensures the entire row area is clickable
+          child: Row(
+            children: [
+              Container(
           padding: const EdgeInsets.all(16),
           decoration: const BoxDecoration(
             color: surfaceLow,
@@ -268,9 +309,12 @@ class _ContactSectionState extends State<ContactSection> {
                 fontWeight: FontWeight.w600,
               ),
             ),
+              ],
+            )
           ],
-        )
-      ],
+        ),
+        ),
+      ),
     );
   }
 
@@ -327,9 +371,8 @@ class _ContactSectionState extends State<ContactSection> {
                      Wrap(
                       spacing: 16,
                       children: [
-                        _buildGhostIconButton(FontAwesomeIcons.github, "https://github.com/Ashwinaneesh"),
-                        _buildGhostIconButton(FontAwesomeIcons.linkedinIn, "https://www.linkedin.com/in/ashwin-aneesh-653526224"),
-                        _buildGhostIconButton(FontAwesomeIcons.twitter, ""),
+                        _buildGhostIconButton(FontAwesomeIcons.linkedinIn, "https://www.linkedin.com/in/ashwin-k-27ri21"),
+                        _buildGhostIconButton(FontAwesomeIcons.whatsapp, "https://wa.me/919747475105?text=Hi%20Ashwin!%20I%20saw%20your%20portfolio%20and%20would%20like%20to%20connect."),
                       ],
                      ),
                     _buildSendButton(),
@@ -342,28 +385,37 @@ class _ContactSectionState extends State<ContactSection> {
         const SizedBox(height: 48),
 
         // The Custom Vector Shape Map Placeholder mimicking the screenshot perfectly
-        Container(
-          width: double.infinity,
-          height: 280,
-          decoration: BoxDecoration(
-            color: const Color(0xFF161618), // Distinct dark map base
-            borderRadius: BorderRadius.circular(24),
-          ),
-          child: Stack(
-            alignment: Alignment.center,
-            children: [
-              // Draw the giant faint location pin representing the map graphic
-              Icon(
-                Icons.location_on_rounded,
-                size: 300,
-                color: Colors.white.withValues(alpha: 0.03), // Faint vector shadow layer
+        MouseRegion(
+          cursor: SystemMouseCursors.click,
+          child: GestureDetector(
+            onTap: () => launchUrl(
+              Uri.parse('https://www.google.com/maps/search/?api=1&query=Eachur+Kannur'),
+              mode: LaunchMode.externalApplication,
+            ),
+            child: Container(
+              width: double.infinity,
+              height: 280,
+              decoration: BoxDecoration(
+                color: const Color(0xFF161618), // Distinct dark map base
+                borderRadius: BorderRadius.circular(24),
               ),
-              Icon(
-                Icons.location_on_rounded,
-                size: 200,
-                color: Colors.white.withValues(alpha: 0.05), // Secondary vector drop
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  // Draw the giant faint location pin representing the map graphic
+                  Icon(
+                    Icons.location_on_rounded,
+                    size: 300,
+                    color: Colors.white.withValues(alpha: 0.03), // Faint vector shadow layer
+                  ),
+                  Icon(
+                    Icons.location_on_rounded,
+                    size: 200,
+                    color: Colors.white.withValues(alpha: 0.05), // Secondary vector drop
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
         )
       ],
@@ -508,7 +560,7 @@ class _ContactSectionState extends State<ContactSection> {
 
   Widget _buildCopyRightText() {
     return Text(
-      "© 2024 NEON ARCHITECT. BUILT WITH KINETIC PRECISION.",
+      "© 2026 ASHWIN // SYSTEM STATUS: ACTIVE",
       style: GoogleFonts.spaceGrotesk(
         color: const Color(0xFF6E6E73),
         fontSize: 10,
@@ -522,13 +574,11 @@ class _ContactSectionState extends State<ContactSection> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        _buildFooterLink("GITHUB", "https://github.com/Ashwinaneesh"),
-        const SizedBox(width: 24),
-        _buildFooterLink("LINKEDIN", "https://www.linkedin.com/in/ashwin-aneesh-653526224"),
+        _buildFooterLink("LINKEDIN", "https://www.linkedin.com/in/ashwin-k-27ri21"),
         const SizedBox(width: 24),
         _buildFooterLink("CODEPEN", ""),
         const SizedBox(width: 24),
-        _buildFooterLink("TWITTER", ""),
+        _buildFooterLink("INSTAGRAM", "https://www.instagram.com/ashwi__n_____"),
       ],
     );
   }

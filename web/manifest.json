@@ -1,11 +1,11 @@
 {
-    "name": "Ashwin K | Digital Architect",
+    "name": "Ashwin K | Product-Driven Developer",
     "short_name": "Ashwin K",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0E0E0F",
-    "theme_color": "#73FFE3",
-    "description": "Professional developer portfolio of Ashwin K — Digital Architect & Full Stack Developer.",
+    "theme_color": "#26E0A6",
+    "description": "Professional developer portfolio of Ashwin K — Product-Driven Developer.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

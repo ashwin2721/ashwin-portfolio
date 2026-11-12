@@ -3,7 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class AboutSection extends StatelessWidget {
-  const AboutSection({super.key});
+  final VoidCallback? onCollaborationPressed;
+  final VoidCallback? onViewProjectsPressed;
+
+  const AboutSection({
+    super.key,
+    this.onCollaborationPressed,
+    this.onViewProjectsPressed,
+  });
 
   /// The Neon Architect Color System
   static const Color bg = Color(0xFF0E0E0F);
@@ -17,6 +24,7 @@ class AboutSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bool isMobile = MediaQuery.of(context).size.width < 900;
+    final bool isTablet = MediaQuery.of(context).size.width >= 600 && MediaQuery.of(context).size.width < 900;
     final double paddingH = isMobile ? 20 : 80;
 
     return Container(
@@ -29,7 +37,7 @@ class AboutSection extends StatelessWidget {
           child: isMobile
               ? Column(
                   children: [
-                    _buildLeftColumn(isMobile: true),
+                    _buildLeftColumn(isMobile: true, isTablet: isTablet),
                     const SizedBox(height: 60),
                     _buildRightColumn(isMobile: true),
                   ],
@@ -37,7 +45,7 @@ class AboutSection extends StatelessWidget {
               : Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Expanded(flex: 4, child: _buildLeftColumn(isMobile: false)),
+                    Expanded(flex: 4, child: _buildLeftColumn(isMobile: false, isTablet: isTablet)),
                     const SizedBox(width: 80),
                     Expanded(flex: 6, child: _buildRightColumn(isMobile: false)),
                   ],
@@ -50,7 +58,7 @@ class AboutSection extends StatelessWidget {
   // ---------------------------------------------------------------------------
   // LEFT COLUMN (Visuals & Mechanics)
   // ---------------------------------------------------------------------------
-  Widget _buildLeftColumn({required bool isMobile}) {
+  Widget _buildLeftColumn({required bool isMobile, required bool isTablet}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -76,6 +84,7 @@ class AboutSection extends StatelessWidget {
                 child: Image.asset(
                   "assets/images/about.png",
                   fit: BoxFit.cover,
+                  alignment: isTablet ? const Alignment(0.0, -0.75) : Alignment.center,
                   errorBuilder: (context, error, stackTrace) => Container(
                     color: surfaceLow,
                     child: const Center(
@@ -169,24 +178,24 @@ class AboutSection extends StatelessWidget {
                 height: 1.8,
               ),
               children: const [
-                TextSpan(text: "class ", style: TextStyle(color: primary)),
-                TextSpan(text: "NeonDeveloper ", style: TextStyle(color: secondary)),
+                TextSpan(text: "class "),
+                TextSpan(text: "DeveloperProfile ", style: TextStyle(color: secondary)),
                 TextSpan(text: "{\n"),
                 TextSpan(text: "  final ", style: TextStyle(color: primary)),
                 TextSpan(text: "String mission = "),
-                TextSpan(text: "\"Pixel-Perfect Efficiency\"", style: TextStyle(color: tertiary)),
+                TextSpan(text: "\"Build scalable and user-focused applications\"", style: TextStyle(color: tertiary)),
                 TextSpan(text: ";\n  "),
                 TextSpan(text: "void ", style: TextStyle(color: primary)),
-                TextSpan(text: "architect() {\n"),
+                TextSpan(text: "goal() {\n"),
                 TextSpan(
-                  text: "    // Designing high-performance cross-platform experiences\n",
+                  text: "    // Creating high-performance cross-platform mobile apps\n",
                   style: TextStyle(color: Color(0xFF505055)),
                 ),
                 TextSpan(text: "    UI.render", style: TextStyle(color: secondary)),
                 TextSpan(text: "(fluidity: "),
                 TextSpan(text: "1.0", style: TextStyle(color: tertiary)),
-                TextSpan(text: ", precision: "),
-                TextSpan(text: "\"Absolute\"", style: TextStyle(color: tertiary)),
+                TextSpan(text: ", experience: "),
+                TextSpan(text: "\"Smooth\"", style: TextStyle(color: tertiary)),
                 TextSpan(text: ");\n  }\n}"),
               ],
             ),
@@ -224,7 +233,7 @@ class AboutSection extends StatelessWidget {
 
         // Hero Typography
         Text(
-          "Architecting",
+          "Architecting Scalable",
           style: GoogleFonts.spaceGrotesk(
             color: Colors.white,
             fontSize: isMobile ? 48 : 64,
@@ -234,7 +243,7 @@ class AboutSection extends StatelessWidget {
           ),
         ),
         Text(
-          "Digital Velocity.",
+          "Mobile Solutions.",
           style: GoogleFonts.spaceGrotesk(
             color: primary,
             fontSize: isMobile ? 48 : 64,
@@ -264,7 +273,7 @@ class AboutSection extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                "I’m Ashwin, Flutter developer at Techtern Pvt. Ltd.",
+                "I’m Ashwin, a Flutter Developer at Techtern Pvt. Ltd.",
                 style: GoogleFonts.inter(
                   color: Colors.white.withValues(alpha: 0.9),
                   fontSize: 18,
@@ -274,7 +283,7 @@ class AboutSection extends StatelessWidget {
               ),
               const SizedBox(height: 24),
               Text(
-                "I enjoy building responsive, user-friendly applications—whether it’s dynamic web platforms using MongoDB, Express.js, React, and Node.js, or crafting beautiful cross-platform apps with Flutter, Firebase, and Riverpod.\n\nCurrently, I bring ideas to life through clean, efficient, and scalable code. With a background in Computer Science and a hunger for growth, I stay continuously updated with the latest trends in modern architecture.",
+                "I specialize in building responsive, user-friendly mobile applications using Flutter and Firebase, with strong experience in REST API integration and real-world application development. I focus on creating clean, efficient, and scalable solutions that deliver smooth user experiences.\n\nCurrently, I work on developing and improving cross-platform applications, collaborating with teams to bring ideas into production-ready products. With a background in Computer Science and a strong interest in product development, I continuously learn and adapt to modern technologies and best practices.",
                 style: GoogleFonts.inter(
                   color: const Color(0xFFA0A0A0),
                   fontSize: 15,
@@ -288,9 +297,9 @@ class AboutSection extends StatelessWidget {
                 spacing: 32,
                 runSpacing: 24,
                 children: [
-                  _buildStatBlock("08+", "YEARS OF LOGIC"),
-                  _buildStatBlock("250+", "PRODUCTS SHIPPED"),
-                  _buildStatBlock("1.2k", "TTV PRECISION"),
+                  _buildStatBlock("1+", "YEARS EXPERIENCE"),
+                  _buildStatBlock("5+", "PROJECTS BUILT"),
+                  _buildStatBlock("REAL-WORLD", "APPLICATIONS"),
                 ],
               )
             ],
@@ -313,13 +322,11 @@ class AboutSection extends StatelessWidget {
           runSpacing: 12,
           children: [
             _buildGlassChip("Flutter SDK"),
-            _buildGlassChip("Dart Language"),
-            _buildGlassChip("Clean Architecture"),
+            _buildGlassChip("Dart"),
             _buildGlassChip("Firebase"),
-            _buildGlassChip("Riverpod"),
-            _buildGlassChip("CI/CD Mastery"),
-            _buildGlassChip("React / Next.js"),
-            _buildGlassChip("MERN DB"),
+            _buildGlassChip("REST APIs"),
+            _buildGlassChip("Clean Architecture"),
+            _buildGlassChip("SQLite"),
           ],
         ),
         const SizedBox(height: 60),
@@ -328,9 +335,9 @@ class AboutSection extends StatelessWidget {
         Flex(
           direction: isMobile ? Axis.vertical : Axis.horizontal,
           children: [
-            _buildPrimaryGlowButton(),
+            _buildPrimaryGlowButton(onCollaborationPressed),
             SizedBox(width: 24, height: isMobile ? 24 : 0),
-            _buildOutlineGlassButton(),
+            _buildOutlineGlassButton(onViewProjectsPressed),
           ],
         )
       ],
@@ -386,10 +393,12 @@ class AboutSection extends StatelessWidget {
     );
   }
 
-  Widget _buildPrimaryGlowButton() {
+  Widget _buildPrimaryGlowButton(VoidCallback? onTap) {
     return MouseRegion(
       cursor: SystemMouseCursors.click,
-      child: Container(
+      child: GestureDetector(
+        onTap: onTap,
+        child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 18),
         decoration: BoxDecoration(
           color: primary,
@@ -418,13 +427,16 @@ class AboutSection extends StatelessWidget {
           ],
         ),
       ),
+      ),
     );
   }
 
-  Widget _buildOutlineGlassButton() {
+  Widget _buildOutlineGlassButton(VoidCallback? onTap) {
     return MouseRegion(
       cursor: SystemMouseCursors.click,
-      child: Container(
+      child: GestureDetector(
+        onTap: onTap,
+        child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 18),
         decoration: BoxDecoration(
           color: surfaceHigh.withValues(alpha: 0.2), // Barely visible glass background
@@ -432,13 +444,14 @@ class AboutSection extends StatelessWidget {
           border: Border.all(color: ghostBorder),
         ),
         child: Text(
-          "View Prototypes",
+          "View Projects",
           style: GoogleFonts.inter(
             color: Colors.white,
             fontSize: 15,
             fontWeight: FontWeight.bold,
           ),
         ),
+      ),
       ),
     );
   }

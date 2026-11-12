@@ -69,16 +69,18 @@ class CyberSnakeOverlay extends StatelessWidget {
             decoration: const BoxDecoration(color: Color(0xFF26E0A6), shape: BoxShape.circle),
           ),
           const SizedBox(width: 10),
-          Text(
-            'MAINFRAME_TERMINAL :: CYBER_SNAKE.exe',
-            style: GoogleFonts.spaceMono(
-              color: const Color(0xFF26E0A6),
-              fontSize: 11,
-              fontWeight: FontWeight.bold,
-              letterSpacing: 1.2,
+          Expanded(
+            child: Text(
+              'MAINFRAME_TERMINAL :: CYBER_SNAKE.exe',
+              style: GoogleFonts.spaceMono(
+                color: const Color(0xFF26E0A6),
+                fontSize: 11,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 1.2,
+              ),
+              overflow: TextOverflow.ellipsis,
             ),
           ),
-          const Spacer(),
           GestureDetector(
             onTap: () => Navigator.of(context).pop(),
             child: Container(
@@ -127,7 +129,6 @@ class _CyberSnakeGameState extends State<CyberSnakeGame> with SingleTickerProvid
   int _highScore = 0;
   bool _gameOver = false;
   bool _started = false;
-  bool _foodGlowing = false;
 
   late AnimationController _glowController;
   late Animation<double> _glowAnim;
@@ -276,8 +277,9 @@ class _CyberSnakeGameState extends State<CyberSnakeGame> with SingleTickerProvid
       onKeyEvent: _handleKey,
       child: GestureDetector(
         onTap: () {
-          if (!_started && !_gameOver) _startGame();
-          else if (_gameOver) {
+          if (!_started && !_gameOver) {
+            _startGame();
+          } else if (_gameOver) {
             _resetGame();
             Future.delayed(const Duration(milliseconds: 100), _startGame);
           }

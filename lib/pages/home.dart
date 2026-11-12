@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:video_player/video_player.dart';
 import 'dart:math' as math;
 
 class HomeSection extends StatefulWidget {
-  const HomeSection({super.key});
+  final VoidCallback? onViewProjectsPressed;
+
+  const HomeSection({super.key, this.onViewProjectsPressed});
 
   @override
   State<HomeSection> createState() => _HomeSectionState();
@@ -13,12 +16,13 @@ class HomeSection extends StatefulWidget {
 class _HomeSectionState extends State<HomeSection>
     with TickerProviderStateMixin {
   final String resumeUrl =
-      'https://drive.google.com/uc?export=download&id=1WGZxQKAOk-kZTFChTUaN6lSqIbEt-A11';
+      'https://drive.google.com/uc?export=download&id=1ED6ylB8qT_E_Un9n_8ano-k-helDl9_U';
 
   late AnimationController _controller;
   late AnimationController _floatController;
   late Animation<Offset> _slideAnimation;
   late Animation<double> _fadeAnimation;
+  late VideoPlayerController _videoController;
 
   @override
   void initState() {
@@ -45,11 +49,21 @@ class _HomeSectionState extends State<HomeSection>
       curve: Curves.easeInOut,
     );
 
+    _videoController = VideoPlayerController.asset('assets/images/homevid.mp4')
+      ..initialize().then((_) {
+        _videoController.setVolume(0.0);
+        _videoController.setLooping(true);
+        _videoController.setPlaybackSpeed(0.6); // Slightly slower for a smoother, ambient feel
+        _videoController.play();
+        setState(() {}); // trigger rebuild to show video
+      });
+
     _controller.forward();
   }
 
   @override
   void dispose() {
+    _videoController.dispose();
     _floatController.dispose();
     _controller.dispose();
     super.dispose();
@@ -68,11 +82,7 @@ class _HomeSectionState extends State<HomeSection>
   }
 
   void viewProjects() {
-    // You can hook this up to the itemScrollController via a callback
-    // For now we will just show a quick snackbar or do nothing.
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text("Scroll down to 'Works' section")),
-    );
+    widget.onViewProjectsPressed?.call();
   }
 
   bool isMobile(BuildContext context) =>
@@ -88,8 +98,7 @@ class _HomeSectionState extends State<HomeSection>
     
     return Container(
       width: double.infinity,
-      // Give enough height for stacking on mobile or full height on desktop
-      height: mobile ? null : size.height,
+      constraints: BoxConstraints(minHeight: mobile ? 0 : size.height),
       padding: EdgeInsets.symmetric(horizontal: paddingH, vertical: 40),
       child: Center(
         child: ConstrainedBox(
@@ -156,7 +165,7 @@ class _HomeSectionState extends State<HomeSection>
                   ),
                   const SizedBox(width: 10),
                   Text(
-                    "SYSTEM STATUS: OPTIMIZED",
+                    "SYSTEM STATUS: ACTIVE",
                     style: GoogleFonts.orbitron(
                       fontSize: 10,
                       fontWeight: FontWeight.bold,
@@ -171,7 +180,7 @@ class _HomeSectionState extends State<HomeSection>
             
             // Bold Headers
             Text(
-              "CRAFTING",
+              "BUILDING",
               style: GoogleFonts.poppins(
                 fontSize: titleFontSize,
                 fontWeight: FontWeight.w800,
@@ -188,7 +197,7 @@ class _HomeSectionState extends State<HomeSection>
                 end: Alignment.centerRight,
               ).createShader(bounds),
               child: Text(
-                "DIGITAL",
+                "SCALABLE MOBILE",
                 style: GoogleFonts.poppins(
                   fontSize: titleFontSize,
                   fontWeight: FontWeight.w800,
@@ -199,7 +208,7 @@ class _HomeSectionState extends State<HomeSection>
               ),
             ),
             Text(
-              "ARCHITECTURES",
+              "EXPERIENCES",
               style: GoogleFonts.poppins(
                 fontSize: titleFontSize,
                 fontWeight: FontWeight.w800,
@@ -212,7 +221,7 @@ class _HomeSectionState extends State<HomeSection>
 
             // Body Paragraph
             Text(
-              "Engineering immersive digital ecosystems through high-performance software development, structural clean code, and fluidly responsive design systems that push the boundaries of the modern web.",
+              "I build scalable cross-platform mobile applications using Flutter, focusing on performance, clean architecture, and real-world usability. With experience in API integration, Firebase, and product-driven development, I create solutions that are reliable, efficient, and user-focused.",
               style: GoogleFonts.openSans(
                 fontSize: descFontSize,
                 color: const Color(0xFFA0A0A0),
@@ -287,14 +296,13 @@ class _HomeSectionState extends State<HomeSection>
             const SizedBox(height: 60),
 
             // Stats Bottom Row
-            Row(
-              mainAxisAlignment: mobile ? MainAxisAlignment.spaceBetween : MainAxisAlignment.start,
+            Wrap(
+              spacing: mobile ? 20 : 40,
+              runSpacing: 24,
               children: [
-                _buildStatItem("08+", "YEARS EXP", Colors.white, mobile),
-                if (!mobile) const SizedBox(width: 40),
-                _buildStatItem("250+", "DEPLOYMENTS", const Color(0xFF26E0A6), mobile),
-                if (!mobile) const SizedBox(width: 40),
-                _buildStatItem("1.2k", "COMMITS", const Color(0xFF00B4DB), mobile),
+                _buildStatItem("1+", "YEARS EXPERIENCE", Colors.white, mobile),
+                _buildStatItem("5+", "PROJECTS", const Color(0xFF26E0A6), mobile),
+                _buildStatItem("PRODUCTION-LEVEL", "APPS", const Color(0xFF00B4DB), mobile),
               ],
             )
           ],
@@ -386,16 +394,23 @@ class _HomeSectionState extends State<HomeSection>
                   ),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(16),
-                    child: Image.asset(
-                      'assets/images/abstract_waves_bg.png',
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) => Container(
-                        color: const Color(0xFF1A1F24),
-                        child: const Center(
-                           child: Icon(Icons.waves, size: 60, color: Color(0xFF26E0A6))
-                        ),
-                      ),
-                    ),
+                    child: _videoController.value.isInitialized
+                        ? SizedBox.expand(
+                            child: FittedBox(
+                              fit: BoxFit.cover,
+                              child: SizedBox(
+                                width: _videoController.value.size.width,
+                                height: _videoController.value.size.height,
+                                child: VideoPlayer(_videoController),
+                              ),
+                            ),
+                          )
+                        : Container(
+                            color: const Color(0xFF1A1F24),
+                            child: const Center(
+                              child: CircularProgressIndicator(color: Color(0xFF26E0A6)),
+                            ),
+                          ),
                   ),
                 ),
               ),
@@ -431,7 +446,7 @@ class _HomeSectionState extends State<HomeSection>
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            "Mainframe.exe",
+                            "Flutter Engine",
                             style: GoogleFonts.poppins(
                               color: Colors.white,
                               fontSize: 12,
@@ -441,7 +456,7 @@ class _HomeSectionState extends State<HomeSection>
                           ),
                           const SizedBox(height: 2),
                           Text(
-                            "Running scripts...",
+                            "Building UI...",
                             style: GoogleFonts.spaceMono(
                               color: const Color(0xFF26E0A6),
                               fontSize: 9,
@@ -481,11 +496,15 @@ class _HomeSectionState extends State<HomeSection>
                       const SizedBox(height: 10),
                       Row(
                         children: [
-                          _buildTechChip("REACT", isActive: true),
+                          _buildTechChip("FLUTTER", isActive: true),
                           const SizedBox(width: 8),
-                          _buildTechChip("NODE.JS", isActive: false),
+                          _buildTechChip("DART", isActive: false),
                           const SizedBox(width: 8),
-                          _buildTechChip("AWS", isActive: false),
+                          _buildTechChip("FIREBASE", isActive: false),
+                          const SizedBox(width: 8),
+                          _buildTechChip("REST APIs", isActive: false),
+                          const SizedBox(width: 8),
+                          _buildTechChip("SQLITE", isActive: false),
                         ],
                       )
                     ],

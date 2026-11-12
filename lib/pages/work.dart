@@ -42,7 +42,7 @@ class WorkSection extends StatelessWidget {
                     ),
                     const SizedBox(height: 16),
                     Text(
-                      "ARCHITECTING",
+                      "BUILDING",
                       style: GoogleFonts.poppins(
                         color: Colors.white,
                         fontSize: isMobile ? 48 : 64,
@@ -58,7 +58,7 @@ class WorkSection extends StatelessWidget {
                         end: Alignment.centerRight,
                       ).createShader(bounds),
                       child: Text(
-                        "DIGITAL FRONTIERS.",
+                        "REAL-WORLD APPLICATIONS.",
                         style: GoogleFonts.poppins(
                           color: Colors.white,
                           fontSize: isMobile ? 48 : 64,
@@ -72,7 +72,7 @@ class WorkSection extends StatelessWidget {
                     ConstrainedBox(
                       constraints: const BoxConstraints(maxWidth: 550),
                       child: Text(
-                        "Exploring the intersection of kinetic precision and high-performance engineering. A collection of systems built with absolute focus on atmospheric depth and technical scalability.",
+                        "A collection of practical applications focused on performance, usability, and scalable architecture. Each project reflects my experience in Flutter, backend integration, and real-world problem solving.",
                         style: GoogleFonts.inter(
                           color: const Color(0xFFA0A0A0),
                           fontSize: 15,
@@ -86,50 +86,42 @@ class WorkSection extends StatelessWidget {
                     if (isMobile)
                       Column(
                         children: [
-                          _buildCard1(),
+                          _buildToolsHubCard(),
                           const SizedBox(height: 24),
-                          _buildCard2(),
+                          _buildCard1(),
                           const SizedBox(height: 24),
                           _buildCard3(),
                           const SizedBox(height: 24),
-                          _buildCard4(isMobile: true),
-                          const SizedBox(height: 24),
-                          _buildCard5(isMobile: true), // YouTube Project
+                          _buildCard2(),
                         ],
                       )
                     else
-                      Column(
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              // Left Column
-                              Expanded(
-                                flex: 10,
-                                child: Column(
-                                  children: [
-                                    _buildCard1(),
-                                    const SizedBox(height: 24),
-                                    _buildCard3(),
-                                  ],
-                                ),
-                              ),
-                              const SizedBox(width: 24),
-                              // Right Column
-                              Expanded(
-                                flex: 9,
-                                child: Column(
-                                  children: [
-                                    _buildCard2(),
-                                    const SizedBox(height: 24),
-                                    _buildCard4(isMobile: false),
-                                  ],
-                                ),
-                              ),
-                            ],
+                          // Left Column
+                          Expanded(
+                            flex: 10,
+                            child: Column(
+                              children: [
+                                _buildToolsHubCard(),
+                                const SizedBox(height: 24),
+                                _buildCard3(),
+                              ],
+                            ),
                           ),
-                          const SizedBox(height: 24),
-                          _buildCard5(isMobile: false), // Spanning 5th Project
+                          const SizedBox(width: 24),
+                          // Right Column
+                          Expanded(
+                            flex: 9,
+                            child: Column(
+                              children: [
+                                _buildCard1(),
+                                const SizedBox(height: 24),
+                                _buildCard2(),
+                              ],
+                            ),
+                          ),
                         ],
                       ),
                   ],
@@ -145,6 +137,102 @@ class WorkSection extends StatelessWidget {
   // ---------------------------------------------------------------------------
   // CARD BUILDERS
   // ---------------------------------------------------------------------------
+
+  Widget _buildToolsHubCard() {
+    return _BaseProjectCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Stack(
+            children: [
+              Container(
+                width: double.infinity,
+                height: 380,
+                padding: const EdgeInsets.only(top: 40, left: 24, right: 24),
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [Color(0xFF2B2518), Color(0xFF161514)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+                ),
+                child: ClipRRect(
+                  borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+                  child: Image.asset(
+                    'assets/images/toolshub.jpg',
+                    fit: BoxFit.cover,
+                    alignment: Alignment.topCenter,
+                    errorBuilder: (context, error, stackTrace) =>
+                        const Center(child: Icon(Icons.shopping_cart, size: 64, color: Colors.white24)),
+                  ),
+                ),
+              ),
+              Positioned(
+                top: 24,
+                left: 24,
+                child: Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: [
+                    _buildTag("FLUTTER & NODE.JS", const Color(0xFF332912), const Color(0xFFFFB800)),
+                    _buildTag("GEMINI AI", const Color(0xFF14303B), const Color(0xFF00D2FF)),
+                    _buildTag("FEATURED", const Color(0xFF272727), const Color(0xFF808080)),
+                  ],
+                ),
+              )
+            ],
+          ),
+          Padding(
+            padding: const EdgeInsets.all(32.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: Text(
+                        "ToolsHub — Enterprise E-Commerce & Hardware Marketplace",
+                        style: GoogleFonts.poppins(
+                          color: Colors.white,
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    _buildCircularButton("https://tooolshub.netlify.app/"),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  "A full-stack, cross-platform hardware e-commerce platform built with Flutter, Riverpod, PostgreSQL, and Node.js—featuring Google Gemini AI shopping assistance and real-time geo-fenced delivery pricing.",
+                  style: GoogleFonts.inter(
+                    color: const Color(0xFFA0A0A0),
+                    fontSize: 13,
+                    height: 1.6,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  "ToolsHub is an enterprise-grade, cross-platform e-commerce solution engineered for heavy-duty power tools, industrial hardware, and tool maintenance services. Built with a responsive Flutter (Mobile & Web) client and a companion Node.js/TypeScript REST API with PostgreSQL, the application integrates real-time product discovery, distance-based dynamic shipping calculations via OpenStreetMap, integrated digital payments (Razorpay/UPI/Cards), and an AI-driven shopping assistant powered by Google Gemini.",
+                  style: GoogleFonts.inter(
+                    color: const Color(0xFFA0A0A0),
+                    fontSize: 13,
+                    height: 1.6,
+                  ),
+                ),
+                const SizedBox(height: 20),
+                _buildTextLinkButton("EXPLORE TOOLSHUB LIVE →", "https://tooolshub.netlify.app/", highlightColor: const Color(0xFFFFB800)),
+              ],
+            ),
+          )
+        ],
+      ),
+    );
+  }
 
   Widget _buildCard1() {
     return _BaseProjectCard(
@@ -182,7 +270,7 @@ class WorkSection extends StatelessWidget {
                 left: 24,
                 child: Row(
                   children: [
-                    _buildTag("MERN STACK", const Color(0xFF1B3B30), const Color(0xFF4BD9B3)),
+                    _buildTag("FULL STACK PROJECT", const Color(0xFF1B3B30), const Color(0xFF4BD9B3)),
                     const SizedBox(width: 12),
                     _buildTag("FEATURED", const Color(0xFF272727), const Color(0xFF808080)),
                   ],
@@ -200,7 +288,7 @@ class WorkSection extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "Full Stack E-Commerce Website",
+                        "E-Commerce Web Application",
                         style: GoogleFonts.poppins(
                           color: Colors.white,
                           fontSize: 22,
@@ -209,7 +297,7 @@ class WorkSection extends StatelessWidget {
                       ),
                       const SizedBox(height: 12),
                       Text(
-                        "A high-performance retail engine featuring real-time inventory synchronization, dynamic filtering, and a seamless Stripe-integrated checkout experience.",
+                        "A full-stack e-commerce platform with admin dashboard and product management features. Implemented secure authentication, REST APIs, and dynamic data handling for scalable and efficient operations.",
                         style: GoogleFonts.inter(
                           color: const Color(0xFFA0A0A0),
                           fontSize: 13,
@@ -266,7 +354,7 @@ class WorkSection extends StatelessWidget {
               Positioned(
                 top: 24,
                 left: 24,
-                child: _buildTag("FLUTTER", const Color(0xFF143E4B), const Color(0xFF17AAB1)),
+                child: _buildTag("FLUTTER PROJECT", const Color(0xFF143E4B), const Color(0xFF17AAB1)),
               )
             ],
           ),
@@ -276,7 +364,7 @@ class WorkSection extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Flutter Portfolio Website",
+                  "Personal Portfolio Website",
                   style: GoogleFonts.poppins(
                     color: Colors.white,
                     fontSize: 22,
@@ -285,7 +373,7 @@ class WorkSection extends StatelessWidget {
                 ),
                 const SizedBox(height: 12),
                 Text(
-                  "Immersive cross-platform showcase leveraging custom shader effects and fluid Rive animations for a premium user journey.",
+                  "A responsive portfolio website designed to showcase projects and skills with smooth navigation, animations, and clean UI for an enhanced user experience.",
                   style: GoogleFonts.inter(
                     color: const Color(0xFFA0A0A0),
                     fontSize: 13,
@@ -331,7 +419,7 @@ class WorkSection extends StatelessWidget {
               Positioned(
                 top: 24,
                 left: 24,
-                child: _buildTag("SYSTEM DESIGN", const Color(0xFF1A3832), const Color(0xFF57A38B)),
+                child: _buildTag("FLUTTER PROJECT", const Color(0xFF1A3832), const Color(0xFF57A38B)),
               )
             ],
           ),
@@ -341,7 +429,7 @@ class WorkSection extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Tool Rental & Inventory",
+                  "Tools Rental & Inventory Management System",
                   style: GoogleFonts.poppins(
                     color: Colors.white,
                     fontSize: 20,
@@ -350,7 +438,17 @@ class WorkSection extends StatelessWidget {
                 ),
                 const SizedBox(height: 12),
                 Text(
-                  "Sophisticated logistics platform managing real-time equipment tracking and automated availability scheduling across multiple nodes.",
+                  "A multi-tenant, enterprise-grade mobile & local-first solution for power tool rental businesses, featuring real-time inventory tracking, automated billing, and ledger management.",
+                  style: GoogleFonts.inter(
+                    color: const Color(0xFFA0A0A0),
+                    fontSize: 13,
+                    height: 1.6,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  "A cross-platform tool rental and inventory management system engineered with Flutter, Riverpod, and a multi-tenant CouchDB / Cloud Firestore backend. Designed to streamline shop floor operations for tool rental businesses, the application handles end-to-end rental lifecycles—from barcode-assisted dispatch and custom pricing logic to partial payment tracking, digital invoicing, and analytical reporting.",
                   style: GoogleFonts.inter(
                     color: const Color(0xFFA0A0A0),
                     fontSize: 13,
@@ -361,187 +459,6 @@ class WorkSection extends StatelessWidget {
             ),
           )
         ],
-      ),
-    );
-  }
-
-  Widget _buildCard4({required bool isMobile}) {
-    return _BaseProjectCard(
-      child: IntrinsicHeight(
-        child: Flex(
-          direction: isMobile ? Axis.vertical : Axis.horizontal,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Container(
-              width: isMobile ? double.infinity : 280,
-              height: isMobile ? 240 : null,
-              constraints: isMobile ? null : const BoxConstraints(minHeight: 280),
-              padding: const EdgeInsets.all(32),
-              decoration: BoxDecoration(
-                color: const Color(0xFF0D181A),
-                borderRadius: isMobile
-                    ? const BorderRadius.vertical(top: Radius.circular(16))
-                    : const BorderRadius.horizontal(left: Radius.circular(16)),
-              ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(12),
-                child: Image.asset(
-                  'assets/images/w1.png',
-                  fit: BoxFit.cover,
-                  alignment: Alignment.topCenter,
-                  errorBuilder: (context, error, stackTrace) =>
-                      const Center(child: Icon(Icons.api_outlined, size: 60, color: Colors.white24)),
-                ),
-              ),
-            ),
-            Expanded(
-              flex: isMobile ? 0 : 1,
-              child: Padding(
-                padding: const EdgeInsets.all(32.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      "INFRASTRUCTURE",
-                      style: GoogleFonts.orbitron(
-                        color: const Color(0xFF00B4DB),
-                        fontSize: 10,
-                        fontWeight: FontWeight.bold,
-                        letterSpacing: 2,
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    Text(
-                      "User Management\nSystem API",
-                      style: GoogleFonts.poppins(
-                        color: Colors.white,
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        height: 1.3,
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    Text(
-                      "Secure, robust REST architecture featuring OAuth2 integration, JWT-based stateless authentication, and advanced role-based access control (RBAC).",
-                      style: GoogleFonts.inter(
-                        color: const Color(0xFFA0A0A0),
-                        fontSize: 13,
-                        height: 1.6,
-                      ),
-                    ),
-                    const SizedBox(height: 24),
-                    Row(
-                      children: [
-                        _buildMiniIcon(Icons.security),
-                        const SizedBox(width: 12),
-                        _buildMiniIcon(Icons.storage),
-                        const SizedBox(width: 12),
-                        _buildMiniIcon(Icons.route),
-                      ],
-                    )
-                  ],
-                ),
-              ),
-            )
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildCard5({required bool isMobile}) {
-    // The previously omitted YouTube Clone - Reintegrated beautifully!
-    return _BaseProjectCard(
-      child: IntrinsicHeight(
-        child: Flex(
-          direction: isMobile ? Axis.vertical : Axis.horizontal,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Expanded(
-              flex: isMobile ? 0 : 1,
-              child: Padding(
-                padding: const EdgeInsets.all(32.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Text(
-                          "FRONTEND",
-                          style: GoogleFonts.orbitron(
-                            color: const Color(0xFFFF4B4B), // Youtube Red accent
-                            fontSize: 10,
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: 2,
-                          ),
-                        ),
-                        const SizedBox(width: 16),
-                        _buildTag("FEATURED", const Color(0xFF272727), const Color(0xFF808080)),
-                      ],
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      "YouTube Clone",
-                      style: GoogleFonts.poppins(
-                        color: Colors.white,
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        height: 1.3,
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    Text(
-                      "A fully-responsive YouTube replica engineered with pure HTML, CSS, and JS. Features intricate grid layouts, functional search components, and seamless interactive video hover mechanics.",
-                      style: GoogleFonts.inter(
-                        color: const Color(0xFFA0A0A0),
-                        fontSize: 15,
-                        height: 1.6,
-                      ),
-                    ),
-                    const SizedBox(height: 24),
-                    _buildTextLinkButton("EXPLORE PROJECT →", "", highlightColor: const Color(0xFFFF4B4B)),
-                  ],
-                ),
-              ),
-            ),
-             Container(
-              width: isMobile ? double.infinity : 550, // Massive image space right side
-              height: isMobile ? 320 : null,
-              padding: const EdgeInsets.only(top: 40, left: 40, bottom: 40, right: 0),
-              decoration: BoxDecoration(
-                color: const Color(0xFF141214), // Deep reddish-black backdrop
-                borderRadius: isMobile
-                    ? const BorderRadius.vertical(bottom: Radius.circular(16))
-                    : const BorderRadius.horizontal(right: Radius.circular(16)),
-              ),
-              child: Container(
-                decoration: const BoxDecoration(
-                  borderRadius: BorderRadius.horizontal(left: Radius.circular(16)),
-                   boxShadow: [
-                    BoxShadow(
-                      color: Colors.black54,
-                      blurRadius: 20,
-                      offset: Offset(-5, 5),
-                    )
-                  ]
-                ),
-                child: ClipRRect(
-                  borderRadius: const BorderRadius.horizontal(left: Radius.circular(12)),
-                  child: Image.asset(
-                    'assets/images/w2.png', // The YouTube Web screenshot
-                    fit: BoxFit.cover,
-                    alignment: Alignment.topLeft,
-                    errorBuilder: (context, error, stackTrace) =>
-                        const Center(child: Icon(Icons.video_library, size: 60, color: Colors.white24)),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }
@@ -614,18 +531,6 @@ class WorkSection extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-
-  Widget _buildMiniIcon(IconData icon) {
-    return Container(
-      padding: const EdgeInsets.all(8),
-      decoration: BoxDecoration(
-        color: const Color(0xFF1E1E1E),
-        shape: BoxShape.circle,
-        border: Border.all(color: const Color(0xFF2A2A2A)),
-      ),
-      child: Icon(icon, color: const Color(0xFF7CF3D6), size: 16),
     );
   }
 }

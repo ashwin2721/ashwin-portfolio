@@ -36,27 +36,30 @@ class _SkillsSectionState extends State<SkillsSection> with SingleTickerProvider
       width: double.infinity,
       color: Colors.transparent, // Let ambient glow show through
       padding: EdgeInsets.symmetric(horizontal: paddingH, vertical: 80),
-      child: Center(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 1400),
-          child: isMobile
-              ? Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _buildLeftColumn(context, isMobile: true),
-                    const SizedBox(height: 60),
-                    _buildRightColumn(context, isMobile: true),
-                  ],
-                )
-              : Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(flex: 5, child: _buildLeftColumn(context, isMobile: false)),
-                    const SizedBox(width: 40),
-                    Expanded(flex: 5, child: _buildRightColumn(context, isMobile: false)),
-                  ],
-                ),
-        ),
+      alignment: Alignment.topCenter,
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 1400),
+        child: isMobile
+            ? Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildLeftColumn(context, isMobile: true),
+                  const SizedBox(height: 60),
+                  _buildRightColumn(context, isMobile: true),
+                ],
+              )
+            : Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: _buildLeftColumn(context, isMobile: false),
+                  ),
+                  const SizedBox(width: 40),
+                  Expanded(
+                    child: _buildRightColumn(context, isMobile: false),
+                  ),
+                ],
+              ),
       ),
     );
   }
@@ -79,12 +82,12 @@ class _SkillsSectionState extends State<SkillsSection> with SingleTickerProvider
               letterSpacing: -2,
             ),
             children: const [
-              TextSpan(text: "Expertise "),
+              TextSpan(text: "EXPERTISE "),
               TextSpan(
                 text: "&",
                 style: TextStyle(color: Color(0xFF26E0A6)),
               ),
-              TextSpan(text: "\nLogic."),
+              TextSpan(text: "\nLOGIC"),
             ],
           ),
         ),
@@ -92,7 +95,7 @@ class _SkillsSectionState extends State<SkillsSection> with SingleTickerProvider
 
         // Paragraph
         Text(
-          "Architecting digital ecosystems with surgical precision. My toolkit spans the entire stack, focused on performance and aesthetic excellence.",
+          "Building efficient, scalable, and user-focused mobile applications with a strong emphasis on performance, clean architecture, and real-world usability.",
           style: GoogleFonts.inter(
             fontSize: isMobile ? 15 : 16,
             color: const Color(0xFFA0A0A0),
@@ -101,7 +104,7 @@ class _SkillsSectionState extends State<SkillsSection> with SingleTickerProvider
         ),
         const SizedBox(height: 48),
 
-        // Row 1: Two Cards
+        // Row 1: Languages & Frameworks
         Flex(
           direction: isMobile ? Axis.vertical : Axis.horizontal,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -109,10 +112,10 @@ class _SkillsSectionState extends State<SkillsSection> with SingleTickerProvider
             Expanded(
               flex: isMobile ? 0 : 1,
               child: _buildSkillCard(
-                category: "CATEGORY 01",
-                title: "Frontend",
-                icon: Icons.desktop_mac_outlined,
-                chips: ["React", "Next.js", "Tailwind CSS", "Three.js"],
+                category: "01",
+                title: "Programming",
+                icon: Icons.code_rounded,
+                chips: ["Dart", "JavaScript", "SQL", "HTML", "CSS"],
                 isActive: true,
               ),
             ),
@@ -120,10 +123,10 @@ class _SkillsSectionState extends State<SkillsSection> with SingleTickerProvider
             Expanded(
               flex: isMobile ? 0 : 1,
               child: _buildSkillCard(
-                category: "CATEGORY 02",
-                title: "Programming",
-                icon: Icons.code_rounded,
-                chips: ["TypeScript", "Python", "Node.js", "Go"],
+                category: "02",
+                title: "Frameworks",
+                icon: Icons.layers_outlined,
+                chips: ["Flutter", "React", "Node.js", "Express.js"],
                 isActive: true,
               ),
             ),
@@ -131,36 +134,63 @@ class _SkillsSectionState extends State<SkillsSection> with SingleTickerProvider
         ),
         const SizedBox(height: 16),
 
-        // Row 2: Wide Card (Frameworks & Design Tools)
-        Container(
-          width: double.infinity,
-          padding: const EdgeInsets.all(24),
-          decoration: _cardDecoration(),
-          child: Flex(
-            direction: isMobile ? Axis.vertical : Axis.horizontal,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                flex: isMobile ? 0 : 1,
-                child: _buildInnerSkillSection(
-                  title: "Frameworks",
-                  icon: Icons.layers_outlined,
-                  chips: ["Express", "FastAPI", "Django"],
-                  isActive: false,
-                ),
+        // Row 2: Databases & Design
+        Flex(
+          direction: isMobile ? Axis.vertical : Axis.horizontal,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              flex: isMobile ? 0 : 1,
+              child: _buildSkillCard(
+                category: "03",
+                title: "Databases & Tools",
+                icon: Icons.storage_rounded,
+                chips: ["Firebase", "MongoDB", "CouchDB", "Git", "Postman", "VS Code"],
+                isActive: true,
               ),
-              SizedBox(width: 24, height: isMobile ? 32 : 0),
-              Expanded(
-                flex: isMobile ? 0 : 1,
-                child: _buildInnerSkillSection(
-                  title: "Design Tools",
-                  icon: Icons.palette_outlined,
-                  chips: ["Figma", "Spline", "After Effects"],
-                  isActive: false,
-                ),
+            ),
+            SizedBox(width: 16, height: isMobile ? 16 : 0),
+            Expanded(
+              flex: isMobile ? 0 : 1,
+              child: _buildSkillCard(
+                category: "04",
+                title: "Design & Prototyping",
+                icon: Icons.brush_outlined,
+                chips: ["Figma", "UI/UX", "Wireframing", "Prototyping"],
+                isActive: true,
               ),
-            ],
-          ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 16),
+
+        // Row 3: State & Concepts
+        Flex(
+          direction: isMobile ? Axis.vertical : Axis.horizontal,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              flex: isMobile ? 0 : 1,
+              child: _buildSkillCard(
+                category: "05",
+                title: "State Management",
+                icon: Icons.account_tree_outlined,
+                chips: ["Cubit / Bloc", "Provider", "Riverpod"],
+                isActive: true,
+              ),
+            ),
+            SizedBox(width: 16, height: isMobile ? 16 : 0),
+            Expanded(
+              flex: isMobile ? 0 : 1,
+              child: _buildSkillCard(
+                category: "06",
+                title: "Core Concepts",
+                icon: Icons.hub_outlined,
+                chips: ["REST API", "Cross-Platform", "Responsive UI", "Agile", "Roadmaps"],
+                isActive: true,
+              ),
+            ),
+          ],
         ),
         const SizedBox(height: 60),
 
@@ -170,22 +200,22 @@ class _SkillsSectionState extends State<SkillsSection> with SingleTickerProvider
 
         _buildTimelineCard(
           isMobile: isMobile,
-          date: "GRADUATED 2022",
-          title: "Bachelor of\nTechnology",
-          gradeLabel: "CGPA / Grade",
-          grade: "First Class with\nDistinction",
+          date: "CGPA: 7.07",
+          title: "B.Tech in Computer Science\nand Engineering",
+          gradeLabel: "Location",
+          grade: "Kannur",
           icon: Icons.account_balance,
-          institution: "St. Mary's Group of Institutions",
-          subInstitution: "Jawaharlal Nehru Technological University, Hyderabad",
+          institution: "St Thomas College of Engineering and Technology",
+          subInstitution: "Kannur, Kerala",
         ),
         _buildTimelineCard(
           isMobile: isMobile,
-          date: "GRADUATED 2018",
-          title: "Higher Secondary\nEducation (Plus 2)",
-          gradeLabel: "Grade",
-          grade: "Outstanding",
+          date: "86%",
+          title: "Higher Secondary\nEducation (Biology Science)",
+          gradeLabel: "Location",
+          grade: "Kannur",
           icon: Icons.school_outlined,
-          institution: "Mambaram Higher Secondary School",
+          institution: "Munderi Government Higher Secondary School",
           subInstitution: "Kerala State Board",
         ),
       ],
@@ -206,20 +236,28 @@ class _SkillsSectionState extends State<SkillsSection> with SingleTickerProvider
         _buildTimelineCard(
           isMobile: isMobile,
           date: "PRESENT",
+          title: "Product Manager",
+          icon: Icons.assessment_outlined,
+          institution: "Techtern Pvt. Ltd.",
+          subInstitution: "Leading product-driven development, defining roadmaps, and cross-functional team management to scale mobile and web solutions efficiently.",
+          isExperience: true,
+        ),
+        _buildTimelineCard(
+          isMobile: isMobile,
+          date: "PAST",
           title: "Flutter Developer",
           icon: Icons.work_outline,
           institution: "Techtern Pvt. Ltd.",
-          subInstitution: "Building elegant cross-platform applications.",
+          subInstitution: "Architected high-performance cross-platform mobile apps with Flutter and Clean Architecture.",
           isExperience: true,
         ),
-        
         _buildTimelineCard(
           isMobile: isMobile,
           date: "PAST",
           title: "MERN Stack Intern",
           icon: Icons.developer_mode,
-          institution: "Techtern Pvt. Ltd.",
-          subInstitution: "Developed and scaled web platforms.",
+          institution: "Zoople Technologies",
+          subInstitution: "Engineering responsive full-stack web platforms using MongoDB, Express, React, and Node.js.",
           isExperience: true,
         ),
         const SizedBox(height: 80),
@@ -309,38 +347,6 @@ class _SkillsSectionState extends State<SkillsSection> with SingleTickerProvider
     );
   }
 
-  Widget _buildInnerSkillSection({
-    required String title,
-    required IconData icon,
-    required List<String> chips,
-    required bool isActive,
-  }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          children: [
-            Icon(icon, color: const Color(0xFF26E0A6), size: 20),
-            const SizedBox(width: 12),
-            Text(
-              title,
-              style: GoogleFonts.poppins(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 16),
-        Wrap(
-          spacing: 8,
-          runSpacing: 8,
-          children: chips.map((c) => _buildChip(c, isActive: isActive)).toList(),
-        ),
-      ],
-    );
-  }
 
   Widget _buildChip(String text, {required bool isActive}) {
     return Container(
@@ -374,14 +380,16 @@ class _SkillsSectionState extends State<SkillsSection> with SingleTickerProvider
   }) {
     final Color mainColor = isExperience ? const Color(0xFF73FFE3) : const Color(0xFF26E0A6);
 
-    return IntrinsicHeight(
+    return Container(
+      margin: const EdgeInsets.only(bottom: 24),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Timeline line and dot
           Column(
             children: [
               Container(
+                margin: const EdgeInsets.only(top: 10), // Center with first line of title
                 width: 12,
                 height: 12,
                 decoration: BoxDecoration(
@@ -396,122 +404,120 @@ class _SkillsSectionState extends State<SkillsSection> with SingleTickerProvider
                   ],
                 ),
               ),
-              Expanded(
-                child: Container(
-                  width: 1,
-                  color: Colors.white.withValues(alpha: 0.1),
-                ),
+              Container(
+                width: 1,
+                height: 180, // Generous height to ensure continuity
+                color: Colors.white.withValues(alpha: 0.1),
               )
             ],
           ),
           const SizedBox(width: 20),
           // The Card
           Expanded(
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: 24.0),
-              child: Container(
-                padding: const EdgeInsets.all(28),
-                decoration: _cardDecoration(),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                date,
-                                style: GoogleFonts.orbitron(
-                                  color: mainColor,
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.bold,
-                                  letterSpacing: 1.5,
-                                ),
+            child: Container(
+              padding: const EdgeInsets.all(28),
+              decoration: _cardDecoration(), // Glassmorphic look
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              date,
+                              style: GoogleFonts.orbitron(
+                                color: mainColor,
+                                fontSize: 10,
+                                fontWeight: FontWeight.bold,
+                                letterSpacing: 1.5,
                               ),
-                              const SizedBox(height: 8),
-                              Text(
-                                title,
-                                style: GoogleFonts.poppins(
-                                  fontSize: isMobile ? 18 : 22,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
-                                  height: 1.2,
-                                ),
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              title,
+                              style: GoogleFonts.poppins(
+                                color: Colors.white,
+                                fontSize: isMobile ? 18 : 22,
+                                fontWeight: FontWeight.bold,
+                                height: 1.2,
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
-                        if (gradeLabel != null && grade != null)
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
+                      ),
+                      if (gradeLabel != null && grade != null)
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Text(
+                              gradeLabel,
+                              style: GoogleFonts.poppins(
+                                color: const Color(0xFFA0A0A0),
+                                fontSize: 11,
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              grade,
+                              textAlign: TextAlign.right,
+                              style: GoogleFonts.poppins(
+                                color: mainColor,
+                                fontSize: 13,
+                                fontWeight: FontWeight.w600,
+                                fontStyle: FontStyle.italic,
+                              ),
+                            ),
+                          ],
+                        ),
+                    ],
+                  ),
+                  const SizedBox(height: 24),
+                  Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF1C1C1E),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Icon(icon, color: mainColor, size: 24),
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              institution,
+                              style: GoogleFonts.poppins(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                            ),
+                            if (subInstitution != null) ...[
+                              const SizedBox(height: 2),
                               Text(
-                                gradeLabel,
+                                subInstitution,
                                 style: GoogleFonts.poppins(
-                                  color: const Color(0xFFA0A0A0),
                                   fontSize: 11,
+                                  color: const Color(0xFFA0A0A0),
+                                  height: 1.5,
                                 ),
                               ),
-                              const SizedBox(height: 4),
-                              Text(
-                                grade,
-                                textAlign: TextAlign.right,
-                                style: GoogleFonts.poppins(
-                                  color: mainColor,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w600,
-                                  fontStyle: FontStyle.italic,
-                                ),
-                              ),
-                            ],
-                          ),
-                      ],
-                    ),
-                    const SizedBox(height: 30),
-                    Row(
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.all(12),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFF1C1C1E),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Icon(icon, color: mainColor, size: 24),
+                            ]
+                          ],
                         ),
-                        const SizedBox(width: 16),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                institution,
-                                style: GoogleFonts.poppins(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
-                                ),
-                              ),
-                              if (subInstitution != null) ...[
-                                const SizedBox(height: 2),
-                                Text(
-                                  subInstitution,
-                                  style: GoogleFonts.poppins(
-                                    fontSize: 11,
-                                    color: const Color(0xFFA0A0A0),
-                                  ),
-                                ),
-                              ]
-                            ],
-                          ),
-                        )
-                      ],
-                    )
-                  ],
-                ),
+                      )
+                    ],
+                  )
+                ],
               ),
             ),
           ),
@@ -572,7 +578,7 @@ class _SkillsSectionState extends State<SkillsSection> with SingleTickerProvider
                       child: child ?? const SizedBox(),
                     );
                   },
-                  child: _buildMetricLabel("CPU_LOAD: 24%"),
+                  child: _buildMetricLabel("SYSTEM: ACTIVE"),
                 ),
                 AnimatedBuilder(
                   animation: _floatController,
@@ -583,7 +589,7 @@ class _SkillsSectionState extends State<SkillsSection> with SingleTickerProvider
                       child: child ?? const SizedBox(),
                     );
                   },
-                  child: _buildMetricLabel("NODE_STABLE: 1"),
+                  child: _buildMetricLabel("MOBILE_APP_DEV"),
                 ),
                 AnimatedBuilder(
                   animation: _floatController,
@@ -594,50 +600,13 @@ class _SkillsSectionState extends State<SkillsSection> with SingleTickerProvider
                       child: child ?? const SizedBox(),
                     );
                   },
-                  child: _buildMetricLabel("MEM_ALLOC: 4.2GB"),
+                  child: _buildMetricLabel("CLEAN_SCALABLE"),
                 ),
               ],
             ),
           ),
           ), // Close AnimatedBuilder
-          const SizedBox(height: 40),
-          // System Status Tracker Bottom
-          Column(
-            children: [
-              Text(
-                "SYSTEM STATUS",
-                style: GoogleFonts.orbitron(
-                  fontSize: 10,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 3,
-                  color: const Color(0xFFA0A0A0),
-                ),
-              ),
-              const SizedBox(height: 12),
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Container(
-                    width: 6,
-                    height: 6,
-                    decoration: const BoxDecoration(
-                      color: Color(0xFF26E0A6),
-                      shape: BoxShape.circle,
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  Text(
-                    "ARCHITECT_CORE_ACTIVE",
-                    style: GoogleFonts.spaceMono(
-                      color: Colors.white,
-                      fontSize: 11,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
-              )
-            ],
-          )
+
         ],
       ),
     );

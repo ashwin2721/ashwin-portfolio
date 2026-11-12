@@ -25,6 +25,7 @@ dependencies:
 
   # Animations
   animated_text_kit: ^4.2.2
+  video_player: ^2.8.6
 
   # External links & EmailJS
   url_launcher: ^6.2.5

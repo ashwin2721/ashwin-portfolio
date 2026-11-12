@@ -4,11 +4,9 @@ import 'package:my_portfolio/pages/contactus.dart';
 import 'package:my_portfolio/pages/home.dart';
 import 'package:my_portfolio/pages/skills.dart';
 import 'package:my_portfolio/pages/work.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'dart:ui';
-import 'package:google_fonts/google_fonts.dart';
 import './navbar.dart';
 import './wrapper.dart'; // <-- Your custom cursor wrapper
 import './ambient_glow_bg.dart';
@@ -24,7 +22,7 @@ class MyPortfolioApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'My Portfolio',
+      title: 'Ashwin',
       debugShowCheckedModeBanner: false,
       scrollBehavior: MyCustomScrollBehavior(),
       builder: (context, child) => ResponsiveBreakpoints.builder(
@@ -76,14 +74,11 @@ class _PortfolioHomeState extends State<PortfolioHome> {
       backgroundColor: Colors.black,
       body: Stack(
         children: [
-          // Dynamic mesh background replacing the heavy video
           const AmbientGlowBackground(),
-
-          // Allows mouse events to pass if the background blocks anything
           IgnorePointer(
             ignoring: true,
             child: Container(
-              color: Colors.black.withValues(alpha: 0.4), // Gentle darkening pass
+              color: Colors.black.withValues(alpha: 0.4),
             ),
           ),
           Stack(
@@ -91,15 +86,20 @@ class _PortfolioHomeState extends State<PortfolioHome> {
               ScrollablePositionedList.builder(
                 itemScrollController: _scrollController,
                 physics: const BouncingScrollPhysics(),
-                itemCount: 6, // Adding a spacer item count instead of padding
+                itemCount: 6,
                 itemBuilder: (context, index) {
                   switch (index) {
                     case 0:
-                      return const SizedBox(height: 100); // Top padding buffer
+                      return const SizedBox(height: 100);
                     case 1:
-                      return const HomeSection();
+                      return HomeSection(
+                        onViewProjectsPressed: _onViewProjectsPressed,
+                      );
                     case 2:
-                      return const AboutSection();
+                      return AboutSection(
+                        onCollaborationPressed: _onCollaborationPressed,
+                        onViewProjectsPressed: _onViewProjectsPressed,
+                      );
                     case 3:
                       return const SkillsSection();
                     case 4:
@@ -116,7 +116,7 @@ class _PortfolioHomeState extends State<PortfolioHome> {
                 left: 0,
                 right: 0,
                 child: NavBar(
-                  onNavItemSelected: (index) => scrollTo(index + 1), // Offset by 1 for the buffer
+                  onNavItemSelected: (index) => scrollTo(index + 1),
                 ),
               ),
               const BoredGamePrompt(),
@@ -125,6 +125,14 @@ class _PortfolioHomeState extends State<PortfolioHome> {
         ],
       ),
     );
+  }
+
+  void _onCollaborationPressed() {
+    scrollTo(5);
+  }
+
+  void _onViewProjectsPressed() {
+    scrollTo(4);
   }
 }
 

@@ -207,15 +207,10 @@ class _NavBarState extends State<NavBar> with SingleTickerProviderStateMixin {
         ),
         child: AnimatedTextKit(
           repeatForever: true,
-          isRepeatingAnimation: true,
           pause: const Duration(seconds: 4),
           animatedTexts: [
             TyperAnimatedText(
-              "// ashwin.architect",
-              speed: const Duration(milliseconds: 100),
-            ),
-            TyperAnimatedText(
-              "// ashwin.dev",
+              "ASHWIN",
               speed: const Duration(milliseconds: 100),
             ),
           ],
